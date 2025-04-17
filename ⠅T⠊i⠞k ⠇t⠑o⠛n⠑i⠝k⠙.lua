@@ -5,17 +5,97 @@ function mainMenu()
 gg.setVisible(false)
   local choice = gg.choice({
     "Телепорт",
-    "Gm Car",
+    "Транспорт",
+    "Персонаж",
     "Выход"
   }, nil, "Выберите функцию:")
 
   if choice == 1 then
     teleport()
   elseif choice == 2 then
-    carHPMenu()
+    transportMenu()
   elseif choice == 3 then
+    PersMenu()
+  elseif choice == 4 then
     os.exit()
   end
+end
+
+function PersMenu()
+    gg.setVisible(false)
+    local choice = gg.choice({
+        "Увеличение хитбоксов",
+        "Увеличение хитбоксов V2(через стены)",
+        "Назад"
+    }, nil, "Персонаж")
+
+    if choice == 1 then
+        HitboxMenu()
+    elseif choice == 2 then
+        HitBoxMenuV2()
+    elseif choice == 3 or choice == nil then
+        mainMenu()
+    end
+end
+
+function transportMenu()
+    gg.setVisible(false)
+    local choice = gg.choice({
+        "Включить Gm Car",
+        "Назад"
+    }, nil, "Транспорт")
+
+    if choice == 1 then
+        carHPMenu()
+    elseif choice == 2 or choice == nil then
+        mainMenu()
+    end
+end
+
+local originalValue = 1042536203
+local newValue = 1089999999
+local state = false 
+
+function HitBoxMenuV2()
+    gg.clearResults()
+
+    if not state then
+        gg.searchNumber(originalValue, gg.TYPE_DWORD)
+        local results = gg.getResults(999)
+
+        if #results == 0 then
+            gg.alert("❌ Значение для включения не найдено!")
+            return
+        end
+
+        for i, v in ipairs(results) do
+            v.value = newValue
+        end
+
+        gg.setValues(results)
+        gg.toast("✅ Включено")
+        state = true
+        mainMenu()
+        gg.clearResults()
+    else
+        gg.searchNumber(newValue, gg.TYPE_DWORD)
+        local results = gg.getResults(999)
+
+        if #results == 0 then
+            gg.alert("❌ Значение для отключения не найдено!")
+            return
+        end
+
+        for i, v in ipairs(results) do
+            v.value = originalValue
+        end
+
+        gg.setValues(results)
+        gg.toast("⛔ Выключено")
+        state = false
+        gg.clearResults()
+        mainMenu()
+    end
 end
 
 function carHPMenu()
