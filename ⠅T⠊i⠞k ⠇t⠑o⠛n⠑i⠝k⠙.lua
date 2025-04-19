@@ -21,6 +21,81 @@ gg.setVisible(false)
   end
 end
 
+function searchAndReplaceCoords()
+    gg.toast("Ожидание 5 секунд... Поставьте метку 2 раза")
+    gg.sleep(5000)
+    gg.clearResults()
+
+    gg.setRanges(gg.REGION_OTHER)
+    gg.searchNumber("9.21942286e-41", gg.TYPE_FLOAT)
+    local first = gg.getResults(10000)
+    gg.setRanges(gg.REGION_OTHER)
+    gg.searchNumber("9.21956299e-41", gg.TYPE_FLOAT)
+    local second = gg.getResults(10000)
+
+    for _, v in ipairs(second) do
+        table.insert(first, v)
+    end
+
+    local filtered = {}
+    for _, v in ipairs(first) do
+        if string.sub(string.format("%X", v.address), -3) == "80C" then
+            table.insert(filtered, v)
+        end
+    end
+
+    if #filtered == 0 then
+        gg.toast("Координаты не найдены")
+        teleport()
+        return
+    end
+
+    local baseAddr = filtered[1].address
+
+    local savedCoords = {
+        {address = baseAddr - (1 * 8), flags = gg.TYPE_FLOAT},
+        {address = baseAddr - (0.5 * 8), flags = gg.TYPE_FLOAT}
+    }
+
+    local values = gg.getValues(savedCoords)
+    for i, v in ipairs(values) do
+        savedCoords[i].value = v.value
+    end
+
+    gg.clearResults()
+    gg.setRanges(gg.REGION_C_ALLOC)
+    gg.searchNumber("4574729552438491892", gg.TYPE_QWORD)
+    gg.refineNumber("4574729552438491892")
+    local results = gg.getResults(1)
+
+    if #results == 0 then
+        gg.toast("Метка не найдена")
+        mainMenu()
+        return
+    end
+
+        local newBase = results[1].address
+    local targetOffsets = {
+        {address = newBase + (14.5 * 8), flags = gg.TYPE_FLOAT}, -- X
+        {address = newBase + (15 * 8), flags = gg.TYPE_FLOAT}     -- Z
+    }
+
+    for i = 1, #targetOffsets do
+        targetOffsets[i].value = savedCoords[i].value
+    end
+
+    table.insert(targetOffsets, {
+        address = newBase + (15.5 * 8), -- Y
+        flags = gg.TYPE_FLOAT,
+        value = 25
+    })
+
+    gg.setValues(targetOffsets)
+    gg.clearResults()
+    gg.toast("Координаты успешно перенесены!")
+    mainMenu()
+end
+
 function PersMenu()
     gg.setVisible(false)
     local choice = gg.choice({
@@ -38,6 +113,26 @@ function PersMenu()
     end
 end
 
+function HitboxMenu()
+  gg.clearResults()
+    while true do
+        gg.clearResults()
+        gg.setRanges(gg.REGION_C_ALLOC)
+        gg.searchNumber("1042536202", gg.TYPE_DWORD)
+        local results = gg.getResults(5000)
+
+        if results ~= nil and #results > 0 then
+            gg.editAll("1076161254", gg.TYPE_DWORD)
+            gg.clearResults()
+            print("Значения изменены: найдено " .. #results)
+        else
+            print("Значения не найдены.")
+        end
+
+        gg.sleep(10000) -- пауза 10 секунд
+    end
+end
+
 function transportMenu()
     gg.setVisible(false)
     local choice = gg.choice({
@@ -46,7 +141,7 @@ function transportMenu()
     }, nil, "Транспорт")
 
     if choice == 1 then
-        carHPMenu()
+        findAndFreezeAllCarHP()
     elseif choice == 2 or choice == nil then
         mainMenu()
     end
@@ -98,39 +193,29 @@ function HitBoxMenuV2()
     end
 end
 
-function carHPMenu()
-gg.setVisible(false)
-  local choice = gg.choice({
-    "Включить Gm",
-    "Назад"
-  }, nil, "Выберите действие")
-
-  if choice == 1 then
-    findAndEditAllCarHP(9999999)
-  elseif choice == 2 or choice == nil then
-    mainMenu()
-  end
-end
-
-function findAndEditAllCarHP()
+function findAndFreezeAllCarHP()
     gg.setRanges(gg.REGION_C_ALLOC)
     gg.searchNumber("4934256341737799680", gg.TYPE_QWORD)
     gg.refineNumber("4934256341737799680")
-    local results = gg.getResults(9999) 
+    local results = gg.getResults(9999)
 
     if #results > 0 then
-        local values = {}
+        local freezeList = {}
         for i, result in ipairs(results) do
-            table.insert(values, {
-                address = result.address + (0.5 * 8),
+            local hpAddr = result.address + (0.5 * 8)
+            local value = gg.getValues({{address = hpAddr, flags = gg.TYPE_FLOAT}})
+            
+            table.insert(freezeList, {
+                address = hpAddr,
                 flags = gg.TYPE_FLOAT,
-                value = 9999999,
+                value = value[1].value,
+                freeze = true,
                 name = "Car HP " .. i
             })
         end
 
-        gg.setValues(values)
-        gg.toast("Изменено HP у " .. #values .. " машин!")
+        gg.addListItems(freezeList)
+        gg.toast("Заморожено HP у " .. #freezeList .. " машин!")
         mainMenu()
     else
         gg.toast("Значение не найдено")
@@ -405,7 +490,8 @@ function teleport()
         "🚀 Телепортироваться",
         "📍 Выбрать точку телепорта",
         "💾 Сохранённые точки",
-        "❌ Выход"
+        "✅ Телепорт по метке",
+        "🔙 Назад"
     }, nil, "Выберите действие")
 
     if choice == 1 then
@@ -418,8 +504,8 @@ function teleport()
     elseif choice == 4 then
         userSavedPointsMenu()
     elseif choice == 5 then
-        cleanupOnExit()
-        gg.toast("Выход")
+        searchAndReplaceCoords()
+    elseif choice == 6 then
         mainMenu()
     else
         gg.toast("Ничего не выбрано")
@@ -428,6 +514,7 @@ function teleport()
 end
 
 function findAndSaveCoords()
+    gg.clearResults()
     gg.setRanges(gg.REGION_C_ALLOC)
     gg.searchNumber("4574729552438491892", gg.TYPE_QWORD)
     gg.refineNumber("4574729552438491892")
@@ -445,8 +532,10 @@ function findAndSaveCoords()
         gg.addListItems(values)
 
         gg.toast("Координаты сохранены!")
+        teleport()
     else
         gg.toast("Значение не найдено")
+        teleport()
     end
 
     gg.clearResults()
@@ -469,11 +558,12 @@ function teleportManual()
             mainMenu()
         else
             gg.toast("Телепорт отменён")
+            teleport()
         end
     else
         gg.toast("Ошибка: не найдены сохранённые координаты!")
+        teleport()
     end
-    mainMenu()
 end
 
 function selectTeleportCategory()
@@ -516,10 +606,10 @@ end
 function selectTeleportLocation(category, subcategory)
     local locations
     if subcategory then
-        -- Если это подкатегория, выбираем локации в подкатегории
+        
         locations = teleportCategories[category][subcategory]
     else
-        -- Если это категория, то выбираем все локации в ней
+        
         locations = teleportCategories[category]
     end
 
@@ -548,7 +638,7 @@ function applyTeleport(x, y, z)
         mainMenu()
     else
         gg.toast("Ошибка: нет сохранённых координат")
-        mainMenu()
+        teleport()
     end
 end
 
@@ -561,7 +651,7 @@ function userSavedPointsMenu()
     elseif choice == 2 then
         chooseSavedPoint()
     else
-        mainMenu()
+        teleport()
     end
 end
 
@@ -569,7 +659,7 @@ function saveCurrentPoint()
     local values = gg.getListItems()
     if #values < 3 then
         gg.toast("Сначала найдите координаты")
-        return mainMenu()
+        return teleport()
     end
 
     local input = gg.prompt({"Имя точки:"}, nil, {"text"})
@@ -584,7 +674,7 @@ function saveCurrentPoint()
     else
         gg.toast("Отмена сохранения")
     end
-    mainMenu()
+    teleport()
 end
 
 function chooseSavedPoint()
@@ -605,7 +695,7 @@ function chooseSavedPoint()
         applyTeleport(point.x, point.y, point.z)
     else
         gg.toast("Выбор отменён")
-        mainMenu()
+        teleport()
     end
 end
 
@@ -630,13 +720,11 @@ function teleportToLocation(location)
         gg.toast("Телепортируемся в " .. location.name .. " (X: " .. x .. ", Y: " .. y .. ", Z: " .. z .. ")")
         gg.sleep(1000)
         gg.toast("Телепорт выполнен!")
+        mainMenu()
     else
         gg.toast("Ошибка: нет сохранённых координат")
+        teleport()
     end
-
-    mainMenu() 
-    gg.sleep(1000)
-    gg.setVisible(false)
 end
 
 loadSavedPoints()
