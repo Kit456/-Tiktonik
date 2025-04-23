@@ -21,6 +21,74 @@ gg.setVisible(false)
   end
 end
 
+function TeleportPoMet()
+    gg.setVisible(false)
+    gg.setRanges(gg.REGION_OTHER)
+    gg.searchNumber("3.60133705e-43", gg.TYPE_FLOAT)
+    local results = gg.getResults(10000)
+
+    local filtered = {}
+    for _, v in ipairs(results) do
+        if string.sub(string.format("%X", v.address), -3) == "55C" then
+            table.insert(filtered, v)
+            break  
+        end
+    end
+
+    if #filtered == 0 then
+        gg.toast("Координаты с нужным окончанием не найдены!")
+        teleport()
+        return
+    end
+
+    local firstFound = filtered[1]
+    local baseAddr = firstFound.address
+
+    local offset1 = baseAddr + (2 * 8)   -- X
+    local offset2 = baseAddr + (2.5 * 8)  -- Y
+    local offset3 = baseAddr + (1.5 * 8)  -- Z
+
+    local coords = {
+        {address = offset1, flags = gg.TYPE_FLOAT},  -- X
+        {address = offset2, flags = gg.TYPE_FLOAT},  -- Y
+        {address = offset3, flags = gg.TYPE_FLOAT},  -- Z
+    }
+
+    local values = gg.getValues(coords)
+    for i, value in ipairs(values) do
+        coords[i].value = value.value
+    end
+
+    gg.clearResults()
+
+    gg.setRanges(gg.REGION_C_ALLOC)
+    gg.searchNumber("4574729552438491892", gg.TYPE_QWORD)
+    gg.refineNumber("4574729552438491892")
+    local results = gg.getResults(1)
+
+    if #results > 0 then
+        local baseAddr = results[1].address
+        local offsets = {
+            {address = baseAddr + (15 * 8), flags = gg.TYPE_FLOAT},  -- X
+            {address = baseAddr + (15.5 * 8), flags = gg.TYPE_FLOAT},  -- Y
+            {address = baseAddr + (14.5 * 8), flags = gg.TYPE_FLOAT}   -- Z
+        }
+
+        for i = 1, #coords do
+            offsets[i].value = coords[i].value
+        end
+
+        gg.setValues(offsets)
+        gg.toast("Координаты успешно заменены!")
+        mainMenu()
+    else
+        gg.toast("Значение не найдено")
+        mainMenu()
+    end
+
+    gg.clearResults()
+end
+
 function searchAndReplaceCoords()
     gg.toast("Ожидание 5 секунд... Поставьте метку 2 раза")
     gg.sleep(5000)
@@ -491,6 +559,7 @@ function teleport()
         "📍 Выбрать точку телепорта",
         "💾 Сохранённые точки",
         "✅ Телепорт по метке",
+        "🧾 Телепорт по чекпоинту",
         "🔙 Назад"
     }, nil, "Выберите действие")
 
@@ -506,6 +575,8 @@ function teleport()
     elseif choice == 5 then
         searchAndReplaceCoords()
     elseif choice == 6 then
+        TeleportPoMet()
+    elseif choice == 7 then
         mainMenu()
     else
         gg.toast("Ничего не выбрано")
