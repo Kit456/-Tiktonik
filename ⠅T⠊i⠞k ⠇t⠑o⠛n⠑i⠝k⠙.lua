@@ -308,8 +308,7 @@ function applyWeapon(type)
         }
     elseif type == "WEAPON_AK47" then
         offsets = {
-            {address = baseAddr + (27.5 * 8), flags = gg.TYPE_DWORD, value = 1
-            25},
+            {address = baseAddr + (27.5 * 8), flags = gg.TYPE_DWORD, value = 25},
             {address = baseAddr + (26 * 8), flags = gg.TYPE_DWORD, value = 30}
         }
     elseif type == "WEAPON_M4" then
