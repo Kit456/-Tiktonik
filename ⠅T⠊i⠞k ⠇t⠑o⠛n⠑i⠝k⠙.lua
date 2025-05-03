@@ -7,6 +7,7 @@ gg.setVisible(false)
     "Телепорт",
     "Транспорт",
     "Персонаж",
+    "Оружие",
     "Выход"
   }, nil, "Выберите функцию:")
 
@@ -17,9 +18,435 @@ gg.setVisible(false)
   elseif choice == 3 then
     PersMenu()
   elseif choice == 4 then
+    Gun()
+  elseif choice == 5 then
     os.exit()
   end
 end
+
+function Gun()
+gg.setVisible(true)
+    local menu = gg.choice({
+        "▶ Выбрать: костет",
+        "▶ Выбрать: клюшка",
+        "▶ Выбрать: дубинка",
+        "▶ Выбрать: нож",                
+        "▶ Выбрать: бита",        
+        "▶ Выбрать: лопата",      
+        "▶ Выбрать: палка",     
+        "▶ Выбрать: катана",       
+        "▶ Выбрать: пила",        
+        "▶ Выбрать: дилдо",        
+        "▶ Выбрать: дилдо2",        
+        "▶ Выбрать: вибратор",        
+        "▶ Выбрать: вибратор2",        
+        "▶ Выбрать: цветы",        
+        "▶ Выбрать: трость",        
+        "▶ Выбрать: граната",        
+        "▶ Выбрать: газ",        
+        "▶ Выбрать: молотов",        
+        "▶ Выбрать: кольт45",        
+        "▶ Выбрать: шокер",        
+        "▶ Выбрать: дигл",        
+        "▶ Выбрать: шотган",        
+        "▶ Выбрать: обрез",        
+        "▶ Выбрать: спас",        
+        "▶ Выбрать: узи",        
+        "▶ Выбрать: мп5",        
+        "▶ Выбрать: акр47",        
+        "▶ Выбрать: м4",       
+        "▶ Выбрать: тек9",        
+        "▶ Выбрать: винтовка",        
+        "▶ Выбрать: снайперка",        
+        "▶ Выбрать: гранатомёт",       
+        "▶ Выбрать: ракетница",       
+        "▶ Выбрать: огнемет",        
+        "▶ Выбрать: миниган",        
+        "▶ Выбрать: липучка",        
+        "▶ Выбрать: активатор",        
+        "▶ Выбрать: спрей",        
+        "▶ Выбрать: огнетушитель",        
+        "▶ Выбрать: камера",        
+        "▶ Выбрать: тепловизор",        
+        "▶ Выбрать: тепловизор2",        
+        "▶ Выбрать: парашют",        
+        "❌ Выход"
+    }, nil, "Выберите оружие:")
+
+    if menu == 1 then
+        applyWeapon("WEAPON_BRASSKNUCKLE")
+    elseif menu == 2 then
+        applyWeapon("WEAPON_GOLFCLUB")
+    elseif menu == 3 then
+        applyWeapon("WEAPON_NITESTICK")
+    elseif menu == 4 then
+        applyWeapon("WEAPON_KNIFE")
+    elseif menu == 5 then
+        applyWeapon("WEAPON_BAT")
+    elseif menu == 6 then
+        applyWeapon("WEAPON_SHOVEL")
+    elseif menu == 7 then
+        applyWeapon("WEAPON_POOLSTICK")
+    elseif menu == 8 then
+        applyWeapon("WEAPON_KATANA")
+    elseif menu == 9 then
+        applyWeapon("WEAPON_CHAINSAW")
+    elseif menu == 10 then
+        applyWeapon("WEAPON_DILDO")
+    elseif menu == 11 then
+        applyWeapon("WEAPON_DILDO2")
+    elseif menu == 12 then
+        applyWeapon("WEAPON_VIBRATOR")
+    elseif menu == 13 then
+        applyWeapon("WEAPON_VIBRATOR2")
+    elseif menu == 14 then
+        applyWeapon("WEAPON_FLOWER")
+    elseif menu == 15 then
+        applyWeapon("WEAPON_CANE")
+    elseif menu == 16 then
+        applyWeapon("WEAPON_GRENADE")
+    elseif menu == 17 then
+        applyWeapon("WEAPON_TEARGAS")
+    elseif menu == 18 then
+        applyWeapon("WEAPON_MOLOTOV")
+    elseif menu == 19 then
+        applyWeapon("WEAPON_COLT45")
+    elseif menu == 20 then
+        applyWeapon("WEAPON_SILENCED")
+    elseif menu == 21 then
+        applyWeapon("WEAPON_DEAGLE")
+    elseif menu == 22 then
+        applyWeapon("WEAPON_SHOTGUN")
+    elseif menu == 23 then
+        applyWeapon("WEAPON_SAWEDOFF")
+    elseif menu == 24 then
+        applyWeapon("WEAPON_SHOTGSPA")
+    elseif menu == 25 then
+        applyWeapon("WEAPON_UZI")
+    elseif menu == 26 then
+        applyWeapon("WEAPON_MP5")
+    elseif menu == 27 then
+        applyWeapon("WEAPON_AK47")
+    elseif menu == 28 then
+        applyWeapon("WEAPON_M4")
+    elseif menu == 29 then
+        applyWeapon("WEAPON_TEC9")
+    elseif menu == 30 then
+        applyWeapon("WEAPON_RIFLE")
+    elseif menu == 31 then
+        applyWeapon("WEAPON_SNIPER")
+    elseif menu == 32 then
+        applyWeapon("WEAPON_ROCKETLAUNCHER")
+    elseif menu == 33 then
+        applyWeapon("WEAPON_HEATSEEKER")
+    elseif menu == 34 then
+        applyWeapon("WEAPON_FLAMETHROWER")
+    elseif menu == 35 then
+        applyWeapon("WEAPON_MINIGUN")
+    elseif menu == 36 then
+        applyWeapon("WEAPON_SATCHEL")
+    elseif menu == 37 then
+        applyWeapon("WEAPON_BOMB")
+    elseif menu == 38 then
+        applyWeapon("WEAPON_SPRAYCAN")
+    elseif menu == 39 then
+        applyWeapon("WEAPON_FIREEXTINGUISHER")
+    elseif menu == 40 then
+        applyWeapon("WEAPON_CAMERA")
+    elseif menu == 41 then
+        applyWeapon("TEPLOWIZER")
+    elseif menu == 42 then
+        applyWeapon("TEPLOWIZER2")
+    elseif menu == 43 then
+        applyWeapon("WEAPON_PARACHUTE")
+    elseif menu == 44 then
+        mainMenu()
+    end
+end
+
+function applyWeapon(type)
+    gg.clearResults()
+    gg.setRanges(gg.REGION_C_ALLOC)
+    gg.searchNumber("99999.99", gg.TYPE_FLOAT)
+    local results = gg.getResults(1)
+
+    if #results == 0 then
+    end
+
+    local baseAddr = results[1].address
+    local offsets = {}
+
+    if type == "WEAPON_BRASSKNUCKLE" then
+        offsets = {
+            {address = baseAddr + (7.5 * 8), flags = gg.TYPE_DWORD, value = 1},
+            {address = baseAddr + (6 * 8), flags = gg.TYPE_DWORD, value = 1}
+        }
+    elseif type == "WEAPON_GOLFCLUB" then
+        offsets = {
+            {address = baseAddr + (7.5 * 8), flags = gg.TYPE_DWORD, value = 1},
+            {address = baseAddr + (6 * 8), flags = gg.TYPE_DWORD, value = 2}
+        }
+    elseif type == "WEAPON_NITESTICK" then
+        offsets = {
+            {address = baseAddr + (11.5 * 8), flags = gg.TYPE_DWORD, value = 1},
+            {address = baseAddr + (10 * 8), flags = gg.TYPE_DWORD, value = 3}
+        }
+    elseif type == "WEAPON_KNIFE" then
+        offsets = {
+            {address = baseAddr + (11.5 * 8), flags = gg.TYPE_DWORD, value = 1},
+            {address = baseAddr + (10 * 8), flags = gg.TYPE_DWORD, value = 4}
+        }
+    elseif type == "WEAPON_BAT" then
+        offsets = {
+            {address = baseAddr + (11.5 * 8), flags = gg.TYPE_DWORD, value = 1},
+            {address = baseAddr + (10 * 8), flags = gg.TYPE_DWORD, value = 5}
+        }
+    elseif type == "WEAPON_SHOVEL" then
+        offsets = {
+            {address = baseAddr + (11.5 * 8), flags = gg.TYPE_DWORD, value = 1},
+            {address = baseAddr + (10 * 8), flags = gg.TYPE_DWORD, value = 6}
+        }
+    elseif type == "WEAPON_POOLSTICK" then
+        offsets = {
+            {address = baseAddr + (11.5 * 8), flags = gg.TYPE_DWORD, value = 1},
+            {address = baseAddr + (10 * 8), flags = gg.TYPE_DWORD, value = 7}
+        }
+    elseif type == "WEAPON_KATANA" then
+        offsets = {
+            {address = baseAddr + (11.5 * 8), flags = gg.TYPE_DWORD, value = 1},
+            {address = baseAddr + (10 * 8), flags = gg.TYPE_DWORD, value = 8}
+        }
+    elseif type == "WEAPON_CHAINSAW" then
+        offsets = {
+            {address = baseAddr + (11.5 * 8), flags = gg.TYPE_DWORD, value = 1},
+            {address = baseAddr + (10 * 8), flags = gg.TYPE_DWORD, value = 9}
+        }
+    elseif type == "WEAPON_DILDO" then
+        offsets = {
+            {address = baseAddr + (47.5 * 8), flags = gg.TYPE_DWORD, value = 1},
+            {address = baseAddr + (46 * 8), flags = gg.TYPE_DWORD, value = 10}
+        }
+    elseif type == "WEAPON_DILDO2" then
+        offsets = {
+            {address = baseAddr + (47.5 * 8), flags = gg.TYPE_DWORD, value = 1},
+            {address = baseAddr + (46 * 8), flags = gg.TYPE_DWORD, value = 11}
+        }
+    elseif type == "WEAPON_VIBRATOR" then
+        offsets = {
+            {address = baseAddr + (47.5 * 8), flags = gg.TYPE_DWORD, value = 1},
+            {address = baseAddr + (46 * 8), flags = gg.TYPE_DWORD, value = 12}
+        }
+    elseif type == "WEAPON_VIBRATOR2" then
+        offsets = {
+            {address = baseAddr + (47.5 * 8), flags = gg.TYPE_DWORD, value = 1},
+            {address = baseAddr + (46 * 8), flags = gg.TYPE_DWORD, value = 13}
+        }
+    elseif type == "WEAPON_FLOWER" then
+        offsets = {
+            {address = baseAddr + (47.5 * 8), flags = gg.TYPE_DWORD, value = 1},
+            {address = baseAddr + (46 * 8), flags = gg.TYPE_DWORD, value = 14}
+        }
+    elseif type == "WEAPON_CANE" then
+        offsets = {
+            {address = baseAddr + (47.5 * 8), flags = gg.TYPE_DWORD, value = 1},
+            {address = baseAddr + (46 * 8), flags = gg.TYPE_DWORD, value = 15}
+        }
+    elseif type == "WEAPON_GRENADE" then
+        offsets = {
+            {address = baseAddr + (39.5 * 8), flags = gg.TYPE_DWORD, value = 5},
+            {address = baseAddr + (38 * 8), flags = gg.TYPE_DWORD, value = 16}
+        }
+    elseif type == "WEAPON_TEARGAS" then
+        offsets = {
+            {address = baseAddr + (39.5 * 8), flags = gg.TYPE_DWORD, value = 5},
+            {address = baseAddr + (38 * 8), flags = gg.TYPE_DWORD, value = 17}
+        }
+    elseif type == "WEAPON_MOLOTOV" then
+        offsets = {
+            {address = baseAddr + (39.5 * 8), flags = gg.TYPE_DWORD, value = 5},
+            {address = baseAddr + (38 * 8), flags = gg.TYPE_DWORD, value = 18}
+        }
+    elseif type == "WEAPON_COLT45" then
+        offsets = {
+            {address = baseAddr + (15.5 * 8), flags = gg.TYPE_DWORD, value = 25},
+            {address = baseAddr + (14 * 8), flags = gg.TYPE_DWORD, value = 22}
+        }
+    elseif type == "WEAPON_SILENCED" then
+        offsets = {
+            {address = baseAddr + (15.5 * 8), flags = gg.TYPE_DWORD, value = 25},
+            {address = baseAddr + (14 * 8), flags = gg.TYPE_DWORD, value = 23}
+        }
+    elseif type == "WEAPON_DEAGLE" then
+        offsets = {
+            {address = baseAddr + (15.5 * 8), flags = gg.TYPE_DWORD, value = 25},
+            {address = baseAddr + (14 * 8), flags = gg.TYPE_DWORD, value = 24}
+        }
+    elseif type == "WEAPON_SHOTGUN" then
+        offsets = {
+            {address = baseAddr + (19.5 * 8), flags = gg.TYPE_DWORD, value = 26},
+            {address = baseAddr + (18 * 8), flags = gg.TYPE_DWORD, value = 25}
+        }
+    elseif type == "WEAPON_SAWEDOFF" then
+        offsets = {
+            {address = baseAddr + (19.5 * 8), flags = gg.TYPE_DWORD, value = 25},
+            {address = baseAddr + (18 * 8), flags = gg.TYPE_DWORD, value = 26}
+        }
+    elseif type == "WEAPON_SHOTGSPA" then
+        offsets = {
+            {address = baseAddr + (19.5 * 8), flags = gg.TYPE_DWORD, value = 25},
+            {address = baseAddr + (18 * 8), flags = gg.TYPE_DWORD, value = 27}
+        }
+    elseif type == "WEAPON_UZI" then
+        offsets = {
+            {address = baseAddr + (23.5 * 8), flags = gg.TYPE_DWORD, value = 25},
+            {address = baseAddr + (22 * 8), flags = gg.TYPE_DWORD, value = 28}
+        }
+    elseif type == "WEAPON_MP5" then
+        offsets = {
+            {address = baseAddr + (23.5 * 8), flags = gg.TYPE_DWORD, value = 25},
+            {address = baseAddr + (22 * 8), flags = gg.TYPE_DWORD, value = 29}
+        }
+    elseif type == "WEAPON_AK47" then
+        offsets = {
+            {address = baseAddr + (27.5 * 8), flags = gg.TYPE_DWORD, value = 1
+            25},
+            {address = baseAddr + (26 * 8), flags = gg.TYPE_DWORD, value = 30}
+        }
+    elseif type == "WEAPON_M4" then
+        offsets = {
+            {address = baseAddr + (27.5 * 8), flags = gg.TYPE_DWORD, value = 25},
+            {address = baseAddr + (26 * 8), flags = gg.TYPE_DWORD, value = 31}
+        }
+    elseif type == "WEAPON_TEC9" then
+        offsets = {
+            {address = baseAddr + (23.5 * 8), flags = gg.TYPE_DWORD, value = 25},
+            {address = baseAddr + (22 * 8), flags = gg.TYPE_DWORD, value = 32}
+        }
+    elseif type == "WEAPON_RIFLE" then
+        offsets = {
+            {address = baseAddr + (31.5 * 8), flags = gg.TYPE_DWORD, value = 25},
+            {address = baseAddr + (30 * 8), flags = gg.TYPE_DWORD, value = 33}
+        }
+    elseif type == "WEAPON_SNIPER" then
+        offsets = {
+            {address = baseAddr + (31.5 * 8), flags = gg.TYPE_DWORD, value = 25},
+            {address = baseAddr + (30 * 8), flags = gg.TYPE_DWORD, value = 34}
+        }
+    elseif type == "WEAPON_ROCKETLAUNCHER" then
+        offsets = {
+            {address = baseAddr + (35.5 * 8), flags = gg.TYPE_DWORD, value = 25},
+            {address = baseAddr + (34 * 8), flags = gg.TYPE_DWORD, value = 35}
+        }
+    elseif type == "WEAPON_HEATSEEKER" then
+        offsets = {
+            {address = baseAddr + (35.5 * 8), flags = gg.TYPE_DWORD, value = 1
+            25},
+            {address = baseAddr + (34 * 8), flags = gg.TYPE_DWORD, value = 36}
+        }
+    elseif type == "WEAPON_FLAMETHROWER" then
+        offsets = {
+            {address = baseAddr + (35.5 * 8), flags = gg.TYPE_DWORD, value = 25},
+            {address = baseAddr + (34 * 8), flags = gg.TYPE_DWORD, value = 37}
+        }
+    elseif type == "WEAPON_MINIGUN" then
+        offsets = {
+            {address = baseAddr + (35.5 * 8), flags = gg.TYPE_DWORD, value = 25},
+            {address = baseAddr + (34 * 8), flags = gg.TYPE_DWORD, value = 38}
+        }
+    elseif type == "WEAPON_SATCHEL" then
+        offsets = {
+            {address = baseAddr + (39.5 * 8), flags = gg.TYPE_DWORD, value = 5},
+            {address = baseAddr + (38 * 8), flags = gg.TYPE_DWORD, value = 39}
+        }
+    elseif type == "WEAPON_BOMB" then
+        offsets = {
+            {address = baseAddr + (54.5 * 8), flags = gg.TYPE_DWORD, value = 1},
+            {address = baseAddr + (53 * 8), flags = gg.TYPE_DWORD, value = 40}
+        }
+    elseif type == "WEAPON_SPRAYCAN" then
+        offsets = {
+            {address = baseAddr + (43.5 * 8), flags = gg.TYPE_DWORD, value = 25},
+            {address = baseAddr + (42 * 8), flags = gg.TYPE_DWORD, value = 41}
+        }
+    elseif type == "WEAPON_FIREEXTINGUISHER" then
+        offsets = {
+            {address = baseAddr + (54.5 * 8), flags = gg.TYPE_DWORD, value = 25},
+            {address = baseAddr + (53 * 8), flags = gg.TYPE_DWORD, value = 42}
+        }
+    elseif type == "WEAPON_CAMERA" then
+        offsets = {
+            {address = baseAddr + (43.5 * 8), flags = gg.TYPE_DWORD, value = 1},
+            {address = baseAddr + (42 * 8), flags = gg.TYPE_DWORD, value = 43}
+        }
+    elseif type == "TEPLOWIZER" then
+        offsets = {
+            {address = baseAddr + (51.5 * 8), flags = gg.TYPE_DWORD, value = 1},
+            {address = baseAddr + (50 * 8), flags = gg.TYPE_DWORD, value = 44}
+        }
+    elseif type == "TEPLOWIZER2" then
+        offsets = {
+            {address = baseAddr + (51.5 * 8), flags = gg.TYPE_DWORD, value = 1},
+            {address = baseAddr + (50 * 8), flags = gg.TYPE_DWORD, value = 45}
+        }
+    elseif type == "WEAPON_PARACHUTE" then
+        offsets = {
+            {address = baseAddr + (51.5 * 8), flags = gg.TYPE_DWORD, value = 1},
+            {address = baseAddr + (50 * 8), flags = gg.TYPE_DWORD, value = 46}
+        }
+    end
+
+    if #offsets > 0 then
+        gg.setValues(offsets)
+        local name = weaponNames[type] or type
+        gg.alert("Выдано оружие: " .. name)
+    else
+    gg.setVisible(true)
+        gg.alert("Не удалось выдать оружие.")
+    end
+end
+local weaponNames = {
+    WEAPON_BRASSKNUCKLE = "Кастет",
+    WEAPON_GOLFCLUB = "Клюшка для гольфа",
+    WEAPON_NITESTICK = "Полицейская дубинка",
+    WEAPON_KNIFE = "Нож",
+    WEAPON_BAT = "Бейсбольная бита",
+    WEAPON_SHOVEL = "Лопата",
+    WEAPON_POOLSTICK = "Бильярдный кий",
+    WEAPON_KATANA = "Катана",
+    WEAPON_CHAINSAW = "Бензопила",
+    WEAPON_DILDO1 = "Фиолетовый фаллоимитатор",
+    WEAPON_DILDO2 = "Серый фаллоимитатор",
+    WEAPON_VIBE1 = "Розовый вибратор",
+    WEAPON_VIBE2 = "Белый вибратор",
+    WEAPON_FLOWER = "Букет цветов",
+    WEAPON_CANE = "Трость",
+    WEAPON_GRENADE = "Граната",
+    WEAPON_TEARGAS = "Слезоточивый газ",
+    WEAPON_MOLOTOV = "Коктейль Молотова",
+    WEAPON_COLT45 = "Пистолет Colt .45",
+    WEAPON_SILENCED = "Пистолет с глушителем",
+    WEAPON_DESERT_EAGLE = "Desert Eagle",
+    WEAPON_SHOTGUN = "Обрез",
+    WEAPON_SAWEDOFF = "Двустволка",
+    WEAPON_SPAS12 = "SPAS-12",
+    WEAPON_UZI = "Узи",
+    WEAPON_MP5 = "MP5",
+    WEAPON_AK47 = "АК-47",
+    WEAPON_M4 = "M4",
+    WEAPON_TEC9 = "TEC-9",
+    WEAPON_RIFLE = "Охотничья винтовка",
+    WEAPON_SNIPER = "Снайперская винтовка",
+    WEAPON_ROCKET_LAUNCHER = "РПГ",
+    WEAPON_HEATSEEKER = "Самонаводящийся РПГ",
+    WEAPON_FLAMETHROWER = "Огнемёт",
+    WEAPON_MINIGUN = "Миниган",
+    WEAPON_SATCHEL = "Взрывчатка",
+    WEAPON_BOMB = "Бомба",
+    WEAPON_SPRAYCAN = "Баллончик с краской",
+    WEAPON_FIREEXTINGUISHER = "Огнетушитель",
+    WEAPON_CAMERA = "Камера",
+    WEAPON_PARACHUTE = "Парашют",
+}
 
 function TeleportPoMet()
     gg.setVisible(false)
@@ -800,3 +1227,11 @@ end
 
 loadSavedPoints()
 mainMenu()
+
+while true do
+    if gg.isVisible(true) then
+        gg.setVisible(false)
+        mainMenu()
+    end
+    gg.sleep(100)
+end
