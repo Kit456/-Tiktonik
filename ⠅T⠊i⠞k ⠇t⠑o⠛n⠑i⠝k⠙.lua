@@ -25,9 +25,9 @@ gg.setVisible(false)
 end
 
 function Gun()
-gg.setVisible(true)
+    gg.setVisible(false)
     local menu = gg.choice({
-        "▶ Выбрать: костет",
+        "▶ Выбрать: кастет",
         "▶ Выбрать: клюшка",
         "▶ Выбрать: дубинка",
         "▶ Выбрать: нож",                
@@ -165,6 +165,7 @@ gg.setVisible(true)
 end
 
 function applyWeapon(type)
+    gg.setVisible(false)
     gg.clearResults()
     gg.setRanges(gg.REGION_C_ALLOC)
     gg.searchNumber("99999.99", gg.TYPE_FLOAT)
@@ -392,16 +393,6 @@ function applyWeapon(type)
             {address = baseAddr + (50 * 8), flags = gg.TYPE_DWORD, value = 46}
         }
     end
-
-    if #offsets > 0 then
-        gg.setValues(offsets)
-        local name = weaponNames[type] or type
-        gg.alert("Выдано оружие: " .. name)
-    else
-    gg.setVisible(true)
-        gg.alert("Не удалось выдать оружие.")
-    end
-end
 local weaponNames = {
     WEAPON_BRASSKNUCKLE = "Кастет",
     WEAPON_GOLFCLUB = "Клюшка для гольфа",
@@ -445,6 +436,15 @@ local weaponNames = {
     WEAPON_CAMERA = "Камера",
     WEAPON_PARACHUTE = "Парашют",
 }
+    if #offsets > 0 then
+        gg.setValues(offsets)
+        local name = weaponNames[type] or type
+        gg.toast("Выдано оружие: " .. name)
+    else
+    gg.setVisible(false)
+        gg.toast("Не удалось выдать оружие.")
+    end
+end
 
 function TeleportPoMet()
     gg.setVisible(false)
@@ -461,7 +461,6 @@ function TeleportPoMet()
     end
 
     if #filtered == 0 then
-        gg.toast("Координаты с нужным окончанием не найдены!")
         teleport()
         return
     end
@@ -1225,3 +1224,11 @@ end
 
 loadSavedPoints()
 mainMenu()
+
+while true do
+    if gg.isVisible(true) then
+        gg.setVisible(false)
+        mainMenu()
+    end
+    gg.sleep(100)
+end
