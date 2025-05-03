@@ -338,8 +338,7 @@ function applyWeapon(type)
         }
     elseif type == "WEAPON_HEATSEEKER" then
         offsets = {
-            {address = baseAddr + (35.5 * 8), flags = gg.TYPE_DWORD, value = 1
-            25},
+            {address = baseAddr + (35.5 * 8), flags = gg.TYPE_DWORD, value = 25},
             {address = baseAddr + (34 * 8), flags = gg.TYPE_DWORD, value = 36}
         }
     elseif type == "WEAPON_FLAMETHROWER" then
