@@ -1227,11 +1227,3 @@ end
 
 loadSavedPoints()
 mainMenu()
-
-while true do
-    if gg.isVisible(true) then
-        gg.setVisible(false)
-        mainMenu()
-    end
-    gg.sleep(100)
-end
