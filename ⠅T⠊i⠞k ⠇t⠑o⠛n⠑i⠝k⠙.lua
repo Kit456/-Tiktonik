@@ -24,7 +24,61 @@ gg.setVisible(false)
   end
 end
 
+local recoilActive = false
+
 function Gun()
+    gg.setVisible(false)
+    local choice = gg.choice({
+        "Выдать оружие",
+        "Анти разброс(New)",
+        "Назад"
+    }, nil, "Выберите действие")
+
+    if choice == 1 then
+        Gun1()
+    elseif choice == 2 then
+        toggleRecoil()
+    elseif choice == 3 or choice == nil then
+        mainMenu()
+    else
+        gg.toast("Ничего не выбрано")
+        mainMenu()
+    end
+end
+
+function toggleRecoil()
+    if not recoilActive then
+        gunn()
+        recoilActive = true
+    else
+        gunn2()
+        recoilActive = false
+    end
+end
+
+function gunn() 
+    gg.clearResults()
+    gg.setRanges(gg.REGION_CODE_APP)
+    gg.searchNumber("100;900", gg.TYPE_FLOAT)
+    gg.refineNumber("100", gg.TYPE_FLOAT)
+    revert = gg.getResults(400)
+    gg.editAll("95", gg.TYPE_FLOAT)
+    gg.clearResults()
+    gg.toast("🌀 Анти-Разброс Активирован 🌀")
+end 
+
+function gunn2() 
+    gg.clearResults()
+    gg.setRanges(gg.REGION_CODE_APP)
+    gg.searchNumber("95;900", gg.TYPE_FLOAT)
+    gg.refineNumber("95", gg.TYPE_FLOAT)
+    revert = gg.getResults(555)
+    gg.editAll("100", gg.TYPE_FLOAT)
+    gg.clearResults()
+    gg.toast("🌀 Анти-Разброс Деактивирован 🌀")
+end
+
+function Gun1()
     gg.setVisible(false)
     local menu = gg.choice({
         "▶ Выбрать: кастет",
@@ -447,6 +501,7 @@ local weaponNames = {
 end
 
 function TeleportPoMet()
+    gg.clearResults()
     gg.setVisible(false)
     gg.setRanges(gg.REGION_OTHER)
     gg.searchNumber("3.60133705e-43", gg.TYPE_FLOAT)
@@ -588,11 +643,18 @@ function searchAndReplaceCoords()
     mainMenu()
 end
 
+local sprintActive = false
+local fovActive = false
+local rainActive = false
+
 function PersMenu()
     gg.setVisible(false)
     local choice = gg.choice({
         "Увеличение хитбоксов",
         "Увеличение хитбоксов V2(через стены)",
+        "Быстрый спринт(New)",
+        "Фов(New)",
+        "Дождь(New)",
         "Назад"
     }, nil, "Персонаж")
 
@@ -600,9 +662,103 @@ function PersMenu()
         HitboxMenu()
     elseif choice == 2 then
         HitBoxMenuV2()
-    elseif choice == 3 or choice == nil then
+    elseif choice == 3 then
+        toggleSprint()
+    elseif choice == 4 then
+        toggleFov()
+    elseif choice == 5 then
+        toggleRain()
+    elseif choice == 6 or choice == nil then
         mainMenu()
     end
+end
+
+function toggleSprint()
+    if not sprintActive then
+        dv1()
+        sprintActive = true
+    else
+        dv2()
+        sprintActive = false
+    end
+end
+
+function toggleFov()
+    if not fovActive then
+        fov1()
+        fovActive = true
+    else
+        fov2()
+        fovActive = false
+    end
+end
+
+function toggleRain()
+    if not rainActive then
+        dojd1()
+        rainActive = true
+    else
+        dojd2()
+        rainActive = false
+    end
+end
+
+function dv1()
+    gg.clearResults()
+    gg.setRanges(gg.REGION_OTHER)
+    gg.searchNumber("4.0;0.69999998808;0.20000000298;5.0;10.0;1.0;0.5;0.30000001192:29", gg.TYPE_FLOAT)
+    gg.refineNumber("0.7", gg.TYPE_FLOAT)
+    revert = gg.getResults(100000)
+    gg.editAll("-0.565651", gg.TYPE_FLOAT)
+    gg.toast("❗СПРИНТ АКТИВИРОВАН❗")
+    gg.clearResults()
+end
+
+function dv2()
+    gg.clearResults()
+    gg.setRanges(gg.REGION_OTHER)
+    gg.searchNumber("4.0;-0.565651;0.20000000298;5.0;10.0;1.0;0.5;0.30000001192:29", gg.TYPE_FLOAT)
+    gg.refineNumber("-0.565651", gg.TYPE_FLOAT)
+    revert = gg.getResults(100000)
+    gg.editAll("0.7", gg.TYPE_FLOAT)
+    gg.toast("❗СПРИНТ ДЕАКТИВИРОВАН❗")
+    gg.clearResults()
+end
+
+function fov1() 
+    gg.setRanges(gg.REGION_CODE_APP)
+    gg.searchNumber("1116471296", gg.TYPE_DWORD)
+    revert = gg.getResults(300)
+    gg.editAll("1122469536", gg.TYPE_DWORD)
+    gg.clearResults()
+    gg.toast("❗FOV АКТИВИРОВАН❗")
+end 
+
+function fov2() 
+    gg.setRanges(gg.REGION_CODE_APP)
+    gg.searchNumber("1122469536", gg.TYPE_DWORD)
+    revert = gg.getResults(300)
+    gg.editAll("1116471296", gg.TYPE_DWORD)
+    gg.clearResults()
+    gg.toast("❗FOV ДЕАКТИВИРОВАН❗")
+end 
+
+function dojd1() 
+    gg.setRanges(gg.REGION_CODE_APP)
+    gg.searchNumber("0.00499999989", gg.TYPE_FLOAT)
+    revert = gg.getResults(300)
+    gg.editAll("-25.84625", gg.TYPE_FLOAT)
+    gg.clearResults()
+    gg.toast("❗ДОЖДЬ АКТИВИРОВАН❗")
+end 
+
+function dojd2() 
+    gg.setRanges(gg.REGION_CODE_APP)
+    gg.searchNumber("-25.84625", gg.TYPE_FLOAT)
+    revert = gg.getResults(300)
+    gg.editAll("0.00499999989", gg.TYPE_FLOAT)
+    gg.clearResults()
+    gg.toast("❗ДОЖДЬ ДЕАКТИВИРОВАН❗")
 end
 
 function HitboxMenu()
@@ -625,18 +781,51 @@ function HitboxMenu()
     end
 end
 
+local baxActive = false -- переменная для отслеживания состояния
+
 function transportMenu()
     gg.setVisible(false)
     local choice = gg.choice({
         "Включить Gm Car",
+        "Взорвать Машину(New)",
         "Назад"
     }, nil, "Транспорт")
 
     if choice == 1 then
         findAndFreezeAllCarHP()
-    elseif choice == 2 or choice == nil then
+    elseif choice == 2 then
+        toggleBax()
+    elseif choice == 3 or choice == nil then
         mainMenu()
     end
+end
+
+function toggleBax()
+    if not baxActive then
+        bax()
+        baxActive = true
+    else
+        bax2()
+        baxActive = false
+    end
+end
+
+function bax() 
+    gg.setRanges(gg.REGION_CODE_APP)
+    gg.searchNumber("250.0", gg.TYPE_FLOAT)
+    revert = gg.getResults(1000)
+    gg.editAll("1000.0234765", gg.TYPE_FLOAT)
+    gg.clearResults()
+    gg.toast("❗ФУНКЦИЯ АКТИВИРОВАНА❗")
+end 
+
+function bax2() 
+    gg.setRanges(gg.REGION_CODE_APP)
+    gg.searchNumber("1000.0234765", gg.TYPE_FLOAT)
+    revert = gg.getResults(1000)
+    gg.editAll("250.0", gg.TYPE_FLOAT)
+    gg.clearResults()
+    gg.toast("❗ФУНКЦИЯ ДЕАКТИВИРОВАНА❗")
 end
 
 local originalValue = 1042536203
@@ -666,7 +855,7 @@ function HitBoxMenuV2()
         gg.clearResults()
     else
         gg.searchNumber(newValue, gg.TYPE_DWORD)
-        local results = gg.getResults(999)
+        local results = gg.getResults(99999999)
 
         if #results == 0 then
             gg.alert("❌ Значение для отключения не найдено!")
