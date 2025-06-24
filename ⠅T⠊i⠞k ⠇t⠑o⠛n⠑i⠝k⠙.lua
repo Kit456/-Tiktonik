@@ -1,6 +1,3 @@
-script_name = "t.me/tikxyz"
-print("" .. script_name)
-
 function mainMenu()
 gg.setVisible(false)
   local choice = gg.choice({
@@ -504,12 +501,12 @@ function TeleportPoMet()
     gg.clearResults()
     gg.setVisible(false)
     gg.setRanges(gg.REGION_OTHER)
-    gg.searchNumber("3.60133705e-43", gg.TYPE_FLOAT)
-    local results = gg.getResults(10000)
+    gg.searchNumber("9,44502007e13", gg.TYPE_FLOAT)
+    local results = gg.getResults(1000000)
 
     local filtered = {}
     for _, v in ipairs(results) do
-        if string.sub(string.format("%X", v.address), -3) == "55C" then
+        if string.sub(string.format("%X", v.address), -3) == "278" then
             table.insert(filtered, v)
             break  
         end
@@ -523,9 +520,9 @@ function TeleportPoMet()
     local firstFound = filtered[1]
     local baseAddr = firstFound.address
 
-    local offset1 = baseAddr + (2 * 8)   -- X
-    local offset2 = baseAddr + (2.5 * 8)  -- Y
-    local offset3 = baseAddr + (1.5 * 8)  -- Z
+    local offset3 = baseAddr + (1 * 8)   -- X
+    local offset1 = baseAddr + (1.5 * 8)  -- Z
+    local offset2 = baseAddr + (2 * 8)  -- Y
 
     local coords = {
         {address = offset1, flags = gg.TYPE_FLOAT},  -- X
@@ -569,7 +566,7 @@ function TeleportPoMet()
 end
 
 function searchAndReplaceCoords()
-    gg.toast("Ожидание 5 секунд... Поставьте метку 2 раза")
+    gg.toast("Ожидание 5 секунд... Поставьте метку и не не трогайте карту")
     gg.sleep(5000)
     gg.clearResults()
 
@@ -655,6 +652,7 @@ function PersMenu()
         "Быстрый спринт(New)",
         "Фов(New)",
         "Дождь(New)",
+        "Ходить сквозь стены",
         "Назад"
     }, nil, "Персонаж")
 
@@ -881,26 +879,20 @@ function findAndFreezeAllCarHP()
     local results = gg.getResults(9999)
 
     if #results > 0 then
-        local freezeList = {}
+        local setList = {}
         for i, result in ipairs(results) do
             local hpAddr = result.address + (0.5 * 8)
-            local value = gg.getValues({{address = hpAddr, flags = gg.TYPE_FLOAT}})
-            
-            table.insert(freezeList, {
+            table.insert(setList, {
                 address = hpAddr,
                 flags = gg.TYPE_FLOAT,
-                value = value[1].value,
-                freeze = true,
-                name = "Car HP " .. i
+                value = 100000
             })
         end
 
-        gg.addListItems(freezeList)
-        gg.toast("Заморожено HP у " .. #freezeList .. " машин!")
-        mainMenu()
+        gg.setValues(setList)
+        gg.toast("Установлено 100000 HP у " .. #setList .. " машин!")
     else
         gg.toast("Значение не найдено")
-        mainMenu()
     end
 
     gg.clearResults()
