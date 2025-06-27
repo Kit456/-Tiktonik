@@ -28,6 +28,7 @@ function Gun()
     local choice = gg.choice({
         "Выдать оружие",
         "Анти разброс(New)",
+        "Смещение прицела(New)",
         "Назад"
     }, nil, "Выберите действие")
 
@@ -35,11 +36,86 @@ function Gun()
         Gun1()
     elseif choice == 2 then
         toggleRecoil()
-    elseif choice == 3 or choice == nil then
+    elseif choice == 3 then
+        Smeh()
+    elseif choice == 4 or choice == nil then
         mainMenu()
     else
         gg.toast("Ничего не выбрано")
         mainMenu()
+    end
+end
+
+local modifiedValues = {}
+
+function searchAndReplaceFloat(target, newValue)
+    gg.clearResults()
+    gg.setRanges(gg.REGION_CODE_APP)
+    gg.searchNumber(target, gg.TYPE_FLOAT, false, gg.SIGN_EQUAL, 0, -1)
+    local results = gg.getResults(100)
+    
+    if #results == 0 then
+        gg.toast("❌ Значение не найдено")
+        return
+    end
+
+    for i, v in ipairs(results) do
+        modifiedValues[v.address] = {
+            address = v.address,
+            flags = v.flags,
+            value = target
+        }
+        v.value = newValue
+    end
+
+    gg.setValues(results)
+    gg.toast("Успешно")
+    gg.clearResults()
+end
+
+function restoreOriginalValues()
+    if next(modifiedValues) == nil then
+        return
+    end
+
+    local restoreList = {}
+    for _, v in pairs(modifiedValues) do
+        table.insert(restoreList, v)
+    end
+
+    gg.setValues(restoreList)
+    gg.toast("Успешно")
+    modifiedValues = {}
+end
+
+function Smeh()
+    local choice = gg.choice({
+        "⬅️ Смещение влево",
+        "➡️ Смещение вправо",
+        "🧮 Свое смещение",
+        "↩️ Откат",
+        "🔙 Назад"
+    }, nil, "Меню смещений")
+
+    if choice == 1 then
+        searchAndReplaceFloat("0.20000000298", -1)
+    elseif choice == 2 then
+        searchAndReplaceFloat("0.20000000298", 1)
+    elseif choice == 3 then
+        local input = gg.prompt({"Введите своё значение смещения:"}, nil, {"number"})
+        if input and input[1] then
+            local num = tonumber(input[1])
+            if num then
+                searchAndReplaceFloat("0.20000000298", num)
+            else
+                gg.toast("❌ Введено не число")
+            end
+        else
+            gg.toast("❌ Ввод отменён")
+        end
+    elseif choice == 4 then
+        restoreOriginalValues()
+        gg.clearResults()
     end
 end
 
@@ -911,6 +987,7 @@ local teleportCategories = {
         {name = "Инкасация", x = -2081, y = 1928, z = 52},
         {name = "Угонщик транспортных средств", x = 2163, y = -1856, z = 20},
         {name = "Дайвер", x = 2427, y = 241, z = 5},      
+        {name = "миниган", x = 257.0, y = 1872.0, z = 18.0},      
     },
     ["2.Общественные места"] = {
         {name = "Автошкола", x = -508, y = 64, z = 13},
