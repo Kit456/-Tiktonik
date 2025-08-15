@@ -725,10 +725,10 @@ function PersMenu()
     local choice = gg.choice({
         "Увеличение хитбоксов",
         "Увеличение хитбоксов V2(через стены)",
-        "Быстрый спринт(New)",
-        "Фов(New)",
-        "Дождь(New)",
-        "Ходить сквозь стены",
+        "Быстрый спринт",
+        "Фов",
+        "Дождь",
+        "Изменить ник(New)",
         "Назад"
     }, nil, "Персонаж")
 
@@ -742,8 +742,170 @@ function PersMenu()
         toggleFov()
     elseif choice == 5 then
         toggleRain()
-    elseif choice == 6 or choice == nil then
+    elseif choice == 6 then
+        changeNik()
+    elseif choice == 7 or choice == nil then
         mainMenu()
+    end
+end
+
+function stringToAscii(str)
+    local ascii = {}
+    for i = 1, #str do
+        table.insert(ascii, string.byte(str, i))
+    end
+    return ascii
+end
+
+function searchAsciiSequence(asciiTable)
+    gg.clearResults()
+    gg.setRanges(gg.REGION_OTHER)
+    local searchStr = table.concat(asciiTable, ";") .. "::" .. #asciiTable
+    gg.searchNumber(searchStr, gg.TYPE_BYTE)
+    return gg.getResults(9999)
+end
+
+function replaceAscii(results, newAscii)
+    local setList = {}
+    for i = 1, #newAscii do
+        table.insert(setList, {
+            address = results[i].address,
+            flags = gg.TYPE_BYTE,
+            value = newAscii[i]
+        })
+    end
+    gg.setValues(setList)
+end
+
+function changeTwinNick()
+    local oldNick = gg.prompt({"Введите текущий ник:"}, nil, {"text"})
+    if not oldNick or not oldNick[1] then
+        gg.toast("❌ Ник не введён")
+        return
+    end
+
+    local oldAscii = stringToAscii(oldNick[1])
+    local results = searchAsciiSequence(oldAscii)
+
+    if #results == 0 then
+        gg.toast("❌ Ник не найден")
+        return
+    end
+
+    local newNick = gg.prompt({"Введите новый ник (такая же длина):"}, nil, {"text"})
+    if not newNick or not newNick[1] then
+        gg.toast("❌ Новый ник не введён")
+        return
+    end
+
+    if #newNick[1] ~= #oldNick[1] then
+        gg.toast("❌ Новый ник должен быть той же длины!")
+        return
+    end
+
+    local newAscii = stringToAscii(newNick[1])
+    replaceAscii(results, newAscii)
+
+    gg.toast("✅ Ник изменён на: " .. newNick[1])
+end
+
+--------------------------------------------------------------
+
+function changeChatNickSafe()
+    local oldNick = gg.prompt({"Введите текущий ник (как в чате):"}, nil, {"text"})
+    if not oldNick or not oldNick[1] then
+        gg.toast("❌ Ник не введён")
+        return
+    end
+    
+    local newNick = gg.prompt({"Введите новый ник:"}, nil, {"text"})
+    if not newNick or not newNick[1] then
+        gg.toast("❌ Новый ник не введён")
+        return
+    end
+
+    if #oldNick[1] ~= #newNick[1] then
+        gg.toast("❌ Длина ника должна совпадать")
+        return
+    end
+
+    gg.setRanges(gg.REGION_JAVA_HEAP)
+    local byteArray = {}
+    for i = 1, #oldNick[1] do
+        byteArray[#byteArray + 1] = string.byte(oldNick[1], i) .. "B"
+    end
+    local searchString = table.concat(byteArray, ";") .. "::" .. #byteArray
+
+    gg.clearResults()
+    gg.searchNumber(searchString, gg.TYPE_BYTE, false, gg.SIGN_EQUAL, 0, -1)
+    local results = gg.getResults(500)
+
+    if #results == 0 then
+        gg.toast("❌ Ник не найден")
+        return
+    end
+
+    local setList = {}
+    for _, v in ipairs(results) do
+        local currentBytes = {}
+        for j = 1, #oldNick[1] do
+            currentBytes[j] = gg.getValues({{address = v.address + (j - 1), flags = gg.TYPE_BYTE}})[1].value
+        end
+
+        local isOldNick = true
+        for j = 1, #oldNick[1] do
+            if currentBytes[j] ~= string.byte(oldNick[1], j) then
+                isOldNick = false
+                break
+            end
+        end
+
+        local isAlreadyNew = true
+        for j = 1, #newNick[1] do
+            if currentBytes[j] ~= string.byte(newNick[1], j) then
+                isAlreadyNew = false
+                break
+            end
+        end
+
+        if isOldNick and not isAlreadyNew then
+            for j = 1, #newNick[1] do
+                table.insert(setList, {
+                    address = v.address + (j - 1),
+                    flags = gg.TYPE_BYTE,
+                    value = string.byte(newNick[1], j)
+                })
+            end
+        end
+    end
+
+    if #setList / #newNick[1] > 50 then
+        gg.toast("⚠️ Найдено слишком много совпадений, заменено только первые 50")
+        setList = {table.unpack(setList, 1, 50 * #newNick[1])}
+    end
+
+    if #setList > 0 then
+        gg.setValues(setList)
+        gg.toast("✅ Ник изменён")
+    else
+        gg.toast("ℹ️ Все найденные значения уже были изменены или не совпадают")
+    end
+end
+
+function changeNik()
+    gg.setVisible(false)
+    local choice = gg.choice({
+        "✏ Изменить ник другого человека",
+        "📜 Изменить ник с чата",
+        "❌ Выход"
+    }, nil, "Выберите действие:")
+
+    if choice == 1 then
+        changeTwinNick()
+    elseif choice == 2 then
+        changeChatNickSafe()
+    elseif choice == 3 then
+        os.exit()
     end
 end
 
@@ -866,7 +1028,7 @@ function transportMenu()
     }, nil, "Транспорт")
 
     if choice == 1 then
-        findAndFreezeAllCarHP()
+        toggleFreezeCarHP()
     elseif choice == 2 then
         toggleBax()
     elseif choice == 3 or choice == nil then
@@ -948,30 +1110,49 @@ function HitBoxMenuV2()
     end
 end
 
-function findAndFreezeAllCarHP()
-    gg.setRanges(gg.REGION_C_ALLOC)
-    gg.searchNumber("4934256341737799680", gg.TYPE_QWORD)
-    gg.refineNumber("4934256341737799680")
-    local results = gg.getResults(9999)
+local hpFrozen = false
+local savedItems = {}
 
-    if #results > 0 then
-        local setList = {}
-        for i, result in ipairs(results) do
-            local hpAddr = result.address + (0.5 * 8)
-            table.insert(setList, {
-                address = hpAddr,
-                flags = gg.TYPE_FLOAT,
-                value = 100000
-            })
+function toggleFreezeCarHP()
+    if not hpFrozen then
+        gg.setRanges(gg.REGION_C_ALLOC)
+        gg.searchNumber("4934256341737799680", gg.TYPE_QWORD)
+        gg.refineNumber("4934256341737799680")
+        local results = gg.getResults(30)
+
+        if #results > 0 then
+            local setList = {}
+            for i, result in ipairs(results) do
+                local hpAddr = result.address + (0.5 * 8)
+                table.insert(setList, {
+                    address = hpAddr,
+                    flags = gg.TYPE_FLOAT,
+                    value = 100000,
+                    freeze = true
+                })
+            end
+
+            gg.setValues(setList)
+            gg.addListItems(setList)
+            savedItems = setList
+            hpFrozen = true
+            gg.toast("✅ Godmode активирован")
+        else
+            gg.toast("❌ Значение не найдено")
         end
 
-        gg.setValues(setList)
-        gg.toast("Установлено 100000 HP у " .. #setList .. " машин!")
+        gg.clearResults()
     else
-        gg.toast("Значение не найдено")
+        -- Снять заморозку перед удалением
+        for i = 1, #savedItems do
+            savedItems[i].freeze = false
+        end
+        gg.setValues(savedItems)
+        gg.removeListItems(savedItems)
+        savedItems = {}
+        hpFrozen = false
+        gg.toast("❌ Godmode деактивирован")
     end
-
-    gg.clearResults()
 end
 
 local teleportCategories = {
@@ -1353,6 +1534,7 @@ function selectTeleportCategory()
         end
     else
         gg.toast("Вы не выбрали категорию")
+        teleport()
     end
 end
 
@@ -1377,6 +1559,7 @@ function selectTeleportLocation(category, subcategory)
         teleportToLocation(selectedLocation)
     else
         gg.toast("Вы не выбрали локацию")
+        teleport()
     end
 end
 
