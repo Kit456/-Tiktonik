@@ -1043,7 +1043,7 @@ local QWORD_TO_FIND = "4568905975200743424"
 local REGION = gg.REGION_C_ALLOC
 local FLOAT_MIN, FLOAT_MAX = 1.000001, 150.0
 local MAX_CANDIDATES = 500000
-local WINDOW_BYTES = 0x15F90
+local WINDOW_BYTES = 0x186A0
 
 local function toastCountDown(sec, msg)
     for i = sec, 1, -1 do
