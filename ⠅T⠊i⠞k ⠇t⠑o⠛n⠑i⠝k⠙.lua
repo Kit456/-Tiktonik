@@ -1023,7 +1023,8 @@ function transportMenu()
     gg.setVisible(false)
     local choice = gg.choice({
         "Включить Gm Car",
-        "Взорвать Машину(New)",
+        "Взорвать Машину",
+        "Телепорт с Машиной",
         "Назад"
     }, nil, "Транспорт")
 
@@ -1031,8 +1032,444 @@ function transportMenu()
         toggleFreezeCarHP()
     elseif choice == 2 then
         toggleBax()
-    elseif choice == 3 or choice == nil then
+    elseif choice == 3 then
+        teleportCar()
+    elseif choice == 4 or choice == nil then
         mainMenu()
+    end
+end
+
+local QWORD_TO_FIND = "4568905975200743424"
+local REGION = gg.REGION_C_ALLOC
+local FLOAT_MIN, FLOAT_MAX = 1.000001, 150.0
+local MAX_CANDIDATES = 500000
+local WINDOW_BYTES = 0x15F90
+
+local function toastCountDown(sec, msg)
+    for i = sec, 1, -1 do
+        gg.toast(msg .. "  (" .. i .. "с)")
+        gg.sleep(1000)
+    end
+end
+
+local function copyTable(list)
+    local r = {}
+    for i = 1, #list do
+        r[i] = {address = list[i].address, flags = list[i].flags, value = list[i].value}
+    end
+    return r
+end
+
+local function valuesMap(list)
+    local m = {}
+    for i = 1, #list do m[list[i].address] = list[i].value end
+    return m
+end
+
+local function filterByDirection(prevList, nextList, wantUp)
+    local prev = valuesMap(prevList)
+    local out = {}
+    for i = 1, #nextList do
+        local a = nextList[i].address
+        local v0 = prev[a]
+        local v1 = nextList[i].value
+        if v0 ~= nil then
+            if wantUp and v1 > v0 then
+                out[#out + 1] = {address = a, flags = gg.TYPE_FLOAT, value = v1}
+            elseif (not wantUp) and v1 < v0 then
+                out[#out + 1] = {address = a, flags = gg.TYPE_FLOAT, value = v1}
+            end
+        end
+    end
+    return out
+end
+
+local function dedupByAddress(list)
+    local seen, out = {}, {}
+    for i = 1, #list do
+        local a = list[i].address
+        if not seen[a] then
+            seen[a] = true
+            out[#out + 1] = list[i]
+        end
+    end
+    return out
+end
+
+local function findCoords()
+    gg.clearResults()
+    gg.setRanges(REGION)
+    gg.searchNumber(QWORD_TO_FIND, gg.TYPE_QWORD, false, gg.SIGN_EQUAL, 0, -1)
+    local qres = gg.getResults(100000)
+
+    if #qres == 0 then
+        gg.alert("❌ Не найдено")
+        return nil
+    end
+
+    local candidates = {}
+    for i = 1, #qres do
+        local startA = qres[i].address
+        local endA = startA + WINDOW_BYTES
+        gg.searchNumber(FLOAT_MIN .. "~" .. FLOAT_MAX, gg.TYPE_FLOAT, false, gg.SIGN_EQUAL, startA, endA)
+        local part = gg.getResults(100000)
+        for j = 1, #part do
+            part[j].flags = gg.TYPE_FLOAT
+            candidates[#candidates + 1] = part[j]
+            if #candidates >= MAX_CANDIDATES then
+                break
+            end
+        end
+        if #candidates >= MAX_CANDIDATES then break end
+    end
+
+    candidates = dedupByAddress(candidates)
+    if #candidates == 0 then
+        gg.alert("❌ Не найдено")
+        return nil
+    end
+
+    return candidates
+end
+
+local function twoChecks(candidates)
+    local before1 = gg.getValues(copyTable(candidates))
+    toastCountDown(10, "Езжайте вверх или вниз")
+    local dir1 = gg.choice({"Ехал вверх", "Ехал вниз"}, nil, "Куда двигались?")
+    if not dir1 then return nil end
+    local wantUp1 = (dir1 == 1)
+    local after1 = gg.getValues(copyTable(candidates))
+    local filtered1 = filterByDirection(before1, after1, wantUp1)
+    if #filtered1 == 0 then return nil end
+
+    local before2 = gg.getValues(copyTable(filtered1))
+    toastCountDown(10, "Повторите движение")
+    local dir2 = gg.choice({"Ехал вверх", "Ехал вниз"}, nil, "Куда двигались (ещё раз) ?")
+    if not dir2 then return nil end
+    local wantUp2 = (dir2 == 1)
+    local after2 = gg.getValues(copyTable(filtered1))
+    local filtered2 = filterByDirection(before2, after2, wantUp2)
+    if #filtered2 == 0 then return nil end
+
+    return filtered2
+end
+
+local function processValues(list)
+    local index = 1
+    while index <= #list do
+        local batch = {}
+        for i = index, math.min(index + 9, #list) do
+            batch[#batch + 1] = list[i]
+        end
+
+        for i, item in ipairs(batch) do
+            item.value = item.value + 10
+            gg.setValues({item})
+            gg.toast("Вариант: #" .. i .. " из " .. #batch)
+            gg.sleep(5000)
+        end
+
+        local menu = {}
+        for i = 1, #batch do
+            menu[#menu + 1] = "Выбрать вариант #" .. i
+        end
+        menu[#menu + 1] = "Следующее"
+
+        local choice = gg.choice(menu, nil, "Выберите вариант или 'Следующее'")
+        if not choice then return end
+
+        if choice <= #batch then
+            local sel = batch[choice]
+            local toSave = {}
+            toSave[1] = sel
+            toSave[2] = {address = sel.address - 0x4, flags = gg.TYPE_FLOAT}
+            toSave[3] = {address = sel.address - 0x8, flags = gg.TYPE_FLOAT}
+            toSave = gg.getValues(toSave)
+            -- даём явные имена, чтобы потом могли однозначно найти записи
+            if toSave[1] then toSave[1].name = "Saved_Coord_X" end
+            if toSave[2] then toSave[2].name = "Saved_Coord_Y" end
+            if toSave[3] then toSave[3].name = "Saved_Coord_Z" end
+            gg.addListItems(toSave)
+            return
+        else
+            index = index + 10
+        end
+    end
+    gg.alert("Координаты закончились ❌")
+end
+
+local function teleportToCheckpointCar()
+    local savedList = gg.getListItems()
+    local savedX, savedY, savedZ = nil, nil, nil
+    for i, v in ipairs(savedList) do
+        if v.name == "Saved_Coord_X" then savedX = v end
+        if v.name == "Saved_Coord_Y" then savedY = v end
+        if v.name == "Saved_Coord_Z" then savedZ = v end
+    end
+    if not (savedX and savedY and savedZ) then
+        gg.alert("❌ Сначала сохраните координаты.")
+        return
+    end
+
+    savedX.value = 0
+    savedY.value = 30
+    savedZ.value = -1370
+    gg.setValues({savedX, savedY, savedZ})
+    gg.toast("➡ Телепорт в точку (0, 30, -1370)")
+    gg.sleep(5000)
+
+    gg.clearResults()
+    gg.setRanges(gg.REGION_OTHER)
+    gg.searchNumber("9,44502007e13", gg.TYPE_FLOAT)
+    local results = gg.getResults(1000000)
+
+    local filtered = {}
+    for _, v in ipairs(results) do
+        if string.sub(string.format("%X", v.address), -3) == "278" then
+            table.insert(filtered, v)
+            break
+        end
+    end
+
+    if #filtered == 0 then
+        gg.alert("❌ Чекпоинт не найден")
+        return
+    end
+
+    local firstFound = filtered[1]
+    local baseAddr = firstFound.address
+
+    local offset3 = baseAddr + (1 * 8)   -- X
+    local offset1 = baseAddr + (2 * 8) -- Z
+    local offset2 = baseAddr + (1.5* 8)   -- Y
+
+    local coords = {
+        {address = offset1, flags = gg.TYPE_FLOAT},  -- X
+        {address = offset2, flags = gg.TYPE_FLOAT},  -- Y
+        {address = offset3, flags = gg.TYPE_FLOAT},  -- Z
+    }
+
+    local values = gg.getValues(coords)
+    for i, value in ipairs(values) do
+        coords[i].value = value.value
+    end
+
+    savedX.value = coords[1].value
+    savedY.value = coords[2].value
+    savedZ.value = coords[3].value
+    gg.setValues({savedX, savedY, savedZ})
+    gg.toast("✅ Телепорт к чекпоинту выполнен!")
+    gg.clearResults()
+end
+
+function teleportToMarkerCar()
+    gg.toast("Ожидание 5 секунд... Поставьте метку и не трогайте карту")
+    gg.sleep(5000)
+    gg.clearResults()
+
+    gg.setRanges(gg.REGION_OTHER)
+    gg.searchNumber("9.21942286e-41", gg.TYPE_FLOAT)
+    local first = gg.getResults(10000)
+
+    gg.setRanges(gg.REGION_OTHER)
+    gg.searchNumber("9.21956299e-41", gg.TYPE_FLOAT)
+    local second = gg.getResults(10000)
+
+    for _, v in ipairs(second) do
+        table.insert(first, v)
+    end
+
+    local filtered = {}
+    for _, v in ipairs(first) do
+        if string.sub(string.format("%X", v.address), -3) == "80C" then
+            table.insert(filtered, v)
+        end
+    end
+
+    if #filtered == 0 then
+        gg.toast("❌ Метка не найдена")
+        return
+    end
+
+    local baseAddr = filtered[1].address
+    local savedCoords = {
+        {address = baseAddr - (1 * 8), flags = gg.TYPE_FLOAT},   -- X
+        {address = baseAddr - (0.5 * 8), flags = gg.TYPE_FLOAT}  -- Z
+    }
+
+    local values = gg.getValues(savedCoords)
+    for i, v in ipairs(values) do
+        savedCoords[i].value = v.value
+    end
+
+    local savedList = gg.getListItems()
+    local savedX, savedY, savedZ = nil, nil, nil
+    for _, v in ipairs(savedList) do
+        if v.name == "Saved_Coord_X" then savedX = v end
+        if v.name == "Saved_Coord_Y" then savedY = v end
+        if v.name == "Saved_Coord_Z" then savedZ = v end
+    end
+
+    if not (savedX and savedY and savedZ) then
+        gg.alert("❌ Сначала сохраните координаты")
+        return
+    end
+
+    -- 1. телепорт на фикс (0,30,-1370)
+    savedX.value = 0
+    savedY.value = 30
+    savedZ.value = -1370
+    gg.setValues({savedX, savedY, savedZ})
+    gg.toast("➡ Телепорт в точку (0,30,-1370)")
+    gg.sleep(1000)
+
+    -- 2. телепорт по координатам метки
+    savedX.value = savedCoords[1].value
+    savedZ.value = savedCoords[2].value
+    savedY.value = 25
+    gg.setValues({savedX, savedY, savedZ})
+    gg.toast("✅ Телепорт к метке выполнен!")
+end
+
+function userSavedPointsMenuCar()
+    local options = {"➕ Сохранить текущую точку", "📌 Телепорт к сохранённой", "⬅️ Назад"}
+    local choice = gg.choice(options, nil, "Сохранённые точки")
+
+    if choice == 1 then
+        saveCurrentPoint()
+    elseif choice == 2 then
+        chooseSavedPoint()
+    else
+        teleport()
+    end
+end
+
+function saveCurrentPoint()
+    local values = gg.getListItems()
+    if #values < 3 then
+        gg.toast("Сначала найдите координаты")
+        return teleport()
+    end
+
+    local input = gg.prompt({"Имя точки:"}, nil, {"text"})
+    if input and input[1] ~= "" then
+        savedPoints[input[1]] = {
+            x = values[1].value,
+            y = values[2].value,
+            z = values[3].value
+        }
+        savePointsToFile()
+        gg.toast("Точка сохранена!")
+    else
+        gg.toast("Отмена сохранения")
+    end
+    teleportCar()
+end
+
+function chooseSavedPoint()
+    if next(savedPoints) == nil then
+        gg.toast("Нет сохранённых точек")
+        return mainMenu()
+    end
+
+    local names = {}
+    for name in pairs(savedPoints) do
+        table.insert(names, name)
+    end
+
+    table.sort(names)
+    local choice = gg.choice(names, nil, "Выберите точку")
+    if choice then
+        local point = savedPoints[names[choice]]
+        applyTeleport(point.x, point.y, point.z)
+    else
+        gg.toast("Выбор отменён")
+        teleport()
+    end
+end
+
+function cleanupOnExit()
+    gg.removeListItems(gg.getListItems())
+    gg.clearResults()
+    gg.toast("Все сохранённые данные удалены!")
+end
+
+function teleportToLocation(location)
+    local x = location.x
+    local y = location.y
+    local z = location.z
+
+    local savedValues = gg.getListItems()
+    if #savedValues >= 3 then
+        savedValues[1].value = x
+        savedValues[2].value = y
+        savedValues[3].value = z
+        gg.setValues(savedValues)
+
+        gg.toast("Телепортируемся в " .. location.name .. " (X: " .. x .. ", Y: " .. y .. ", Z: " .. z .. ")")
+        gg.sleep(1000)
+        gg.toast("Телепорт выполнен!")
+        mainMenu()
+    else
+        gg.toast("Ошибка: нет сохранённых координат")
+        teleport()
+    end
+end
+
+function teleportManualCar()
+    local savedValues = gg.getListItems()
+    if #savedValues >= 3 then
+        local input = gg.prompt({"Введите X:", "Введите Y:", "Введите Z:"},
+            {savedValues[1].value, savedValues[2].value, savedValues[3].value},
+            {"number", "number", "number"})
+
+        if input then
+            savedValues[1].value = input[1]
+            savedValues[2].value = input[2]
+            savedValues[3].value = input[3]
+
+            gg.setValues(savedValues)
+            gg.toast("Телепортация выполнена!")
+            mainMenu()
+        else
+            gg.toast("Телепорт отменён")
+            teleport()
+        end
+    else
+        gg.toast("Ошибка: не найдены сохранённые координаты!")
+        teleportCar()
+    end
+end
+
+function teleportCar()
+    gg.setVisible(false)
+    local choice = gg.choice({
+        "🔍 Найти и сохранить координаты",
+        "💾 Сохранённые точки",
+        "🚀 Телепорт по координатам",
+        "✅ Телепорт по метке",
+        "🧾 Телепорт по чекпоинту",
+        "🔙 Назад"
+    }, nil, "Выберите действие")
+
+    if choice == 1 then
+        local cands = findCoords()
+        if cands then
+            local filtered = twoChecks(cands)
+            if filtered then
+                processValues(filtered)
+            end
+        end
+    elseif choice == 2 then
+        userSavedPointsMenuCar() 
+    elseif choice == 3 then
+        teleportManualCar()
+    elseif choice == 4 then
+        teleportToMarkerCar()
+    elseif choice == 5 then
+        teleportToCheckpointCar()
+    elseif choice == 6 or choice == nil then
+        transportMenu()
     end
 end
 
@@ -1118,7 +1555,7 @@ function toggleFreezeCarHP()
         gg.setRanges(gg.REGION_C_ALLOC)
         gg.searchNumber("4934256341737799680", gg.TYPE_QWORD)
         gg.refineNumber("4934256341737799680")
-        local results = gg.getResults(30)
+        local results = gg.getResults(90)
 
         if #results > 0 then
             local setList = {}
