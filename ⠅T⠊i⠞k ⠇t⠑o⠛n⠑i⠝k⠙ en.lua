@@ -1069,37 +1069,34 @@ function dojd2()
 end
 
 function HitboxMenu()
-  gg.clearResults()
-  local results = gg.getResults(1000)
-  local targetValue = 1042536202
-  local region = gg.REGION_C_ALLOC
-  local step = 27.5* 8
+    gg.clearResults()
+    local targetValue = 1042536202
+    local region = gg.REGION_C_ALLOC
+    local step = 27.5 * 8
 
-  gg.clearResults()
-  gg.setRanges(region)
-  gg.searchNumber(targetValue, gg.TYPE_DWORD)
+    gg.setRanges(region)
+    gg.searchNumber(targetValue, gg.TYPE_DWORD)
+    local results = gg.getResults(1000)
 
-  local results = gg.getResults(1000)
-  if #results == 0 then
-  gg.alert("No values found")
-  os.exit()
-  end
+    if #results == 0 then
+        gg.toast("No values found")
+    else
+        local edits = {}
+        for i, res in ipairs(results) do
+            local finalAddr = res.address - step
+            table.insert(edits, {
+                address = finalAddr,
+                flags = gg.TYPE_FLOAT,
+                value = 5
+            })
+        end
+        gg.setValues(edits)
+    end
 
-   local edits = {}
-   for i, res in ipairs(results) do
-   local finalAddr = res.address - step
-   table.insert(edits, {
-    address = finalAddr,
-    flags = gg.TYPE_FLOAT,
-    value = 5
-   })
- end
-
-   gg.setValues(edits)
- end
     gg.sleep(5000)
     HitboxMenu()
 end
+
 local baxActive = false
 
 local QWORD_TO_FIND = "4568905975200743424"
