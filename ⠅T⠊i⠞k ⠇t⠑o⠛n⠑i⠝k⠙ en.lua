@@ -997,8 +997,8 @@ function toggleFov()
     else
         fov2()
         fovActive = false
-  end
-  end
+    end
+end
 
 function toggleRain()
     if not rainActive then
@@ -1096,9 +1096,10 @@ function HitboxMenu()
  end
 
    gg.setValues(edits)
-   gg.toast("Activated")
  end
-
+    gg.sleep(5000)
+    HitboxMenu()
+end
 local baxActive = false
 
 local QWORD_TO_FIND = "4568905975200743424"
@@ -1488,7 +1489,7 @@ function cycleCheckpoints()
 
         local coords = {
             {address = offset1, flags = gg.TYPE_FLOAT}, -- X
-                        {address = offset2, flags = gg.TYPE_FLOAT}, -- Y
+            {address = offset2, flags = gg.TYPE_FLOAT}, -- Y
             {address = offset3, flags = gg.TYPE_FLOAT}, -- Z
         }
 
@@ -1605,14 +1606,6 @@ function botAir()
             unchangedCount = 0
         end
 
-        -- ⬇ сначала телепорт в фиксированную точку
-        savedX.value = 0
-        savedY.value = 30
-        savedZ.value = -1370
-        gg.setValues({savedX, savedY, savedZ})
-        gg.toast("➡ Teleport to the point (0, 30, -1370)")
-        gg.sleep(1000)
-
         -- ⬇ теперь телепорт на чекпоинт
         savedX.value = values[1].value
         savedY.value = values[2].value
@@ -1623,7 +1616,7 @@ function botAir()
 
         -- если координаты не менялись → выходим
         if unchangedCount >= 3 then
-            gg.toast("✅ The coordinates have stopped being updated, the script has been completed")
+            gg.toast("✅ Checkpoints are over")
             break
         end
 
