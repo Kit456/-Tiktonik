@@ -107,6 +107,7 @@ function Bots()
             "🚖 Taxi Bot",
             "🏎️ Win Racing", 
             "✈️ Bot Avia",
+            "🛢️ Bot Oil Refinery", 
             "🔙 Back"
         }, nil, "Overshoes")
 
@@ -117,6 +118,8 @@ function Bots()
         elseif subMenu == 3 then
             botAir()
         elseif subMenu == 4 then
+            bot_Neftezavod()
+        elseif subMenu == 5 then
             mainMenu()
         end
     end
@@ -1097,6 +1100,7 @@ function HitboxMenu()
     HitboxMenu()
 end
 
+
 local baxActive = false
 
 local QWORD_TO_FIND = "4568905975200743424"
@@ -1622,6 +1626,92 @@ function botAir()
 
         gg.sleep(1000) -- задержка 2 сек
     end
+end
+
+local FLOAT = gg.TYPE_FLOAT
+
+-- Поиск и сохранение координат (авто)
+local function findAndSaveCoordsBot()
+    gg.clearResults()
+    gg.setRanges(gg.REGION_C_ALLOC)
+    gg.searchNumber("4574729552438491892", gg.TYPE_QWORD)
+    gg.refineNumber("4574729552438491892")
+    local results = gg.getResults(1)
+
+    if #results > 0 then
+        local baseAddr = results[1].address
+        local offsets = {
+            {address = baseAddr + (15 * 8), flags = FLOAT, name = "X"},
+            {address = baseAddr + (15.5 * 8), flags = FLOAT, name = "Y"},
+            {address = baseAddr + (14.5 * 8), flags = FLOAT, name = "Z"}
+        }
+
+        gg.addListItems(offsets)
+        gg.toast("Coordinates saved!")
+        return true
+    else
+        gg.alert("It was not possible to find the coordinates!")
+        return false
+    end
+end
+
+-- Получение X, Y, Z
+local function getXYZ()
+    local list = gg.getListItems()
+    if #list < 3 then
+        if not findAndSaveCoordsBot() then
+            return nil
+        end
+        list = gg.getListItems()
+    end
+    return {x = list[1], y = list[2], z = list[3]}
+end
+
+-- Телепорт
+local function teleport(tx, ty, tz)
+    local saved = getXYZ()
+    if not saved then return end
+    local setList = {
+        {address = saved.x.address, flags = FLOAT, value = tx},
+        {address = saved.y.address, flags = FLOAT, value = ty},
+        {address = saved.z.address, flags = FLOAT, value = tz}
+    }
+    gg.setValues(setList)
+end
+
+-- Только смена Z
+local function setZ(tz)
+    local saved = getXYZ()
+    if not saved then return end
+    gg.setValues({{address = saved.z.address, flags = FLOAT, value = tz}})
+end
+
+-- Последовательность точек
+local sequence = {
+    {x = -806.40246582031, y = 782.3818359375, z = 13.10230064392},
+    {x = -806.40246582031, y = 782.3818359375, z = 0.0},
+    {x = -806.24920654297, y = 790.70220947266, z = 13.10230064392},
+    {x = -806.24920654297, y = 790.70220947266, z = 0.0}
+}
+
+-- Бот "Нефтезавод"
+function bot_Neftezavod()
+    gg.toast("Start of the Oil Refinery boat")
+        teleport(sequence[1].x, sequence[1].y, sequence[1].z)
+        gg.sleep(500)
+
+        setZ(sequence[2].z)
+        gg.sleep(500)
+
+        gg.toast("Wait 2.5 seconds...")
+        gg.sleep(2500)
+
+        teleport(sequence[3].x, sequence[3].y, sequence[3].z)
+        gg.sleep(500)
+
+        setZ(sequence[4].z)
+        gg.sleep(500)
+        bot_Neftezavod()
 end
 
 function saveCurrentPoint()
