@@ -1629,63 +1629,42 @@ end
 
 local FLOAT = gg.TYPE_FLOAT
 
--- Поиск и сохранение координат (авто)
-local function findAndSaveCoordsBot()
-    gg.clearResults()
-    gg.setRanges(gg.REGION_C_ALLOC)
-    gg.searchNumber("4574729552438491892", gg.TYPE_QWORD)
-    gg.refineNumber("4574729552438491892")
-    local results = gg.getResults(1)
-
-    if #results > 0 then
-        local baseAddr = results[1].address
-        local offsets = {
-            {address = baseAddr + (15 * 8), flags = FLOAT, name = "X"},
-            {address = baseAddr + (15.5 * 8), flags = FLOAT, name = "Y"},
-            {address = baseAddr + (14.5 * 8), flags = FLOAT, name = "Z"}
-        }
-
-        gg.addListItems(offsets)
-        gg.toast("Координаты сохранены!")
-        return true
-    else
-        gg.alert("Не удалось найти координаты!")
-        return false
-    end
-end
-
--- Получение X, Y, Z
-local function getXYZ()
+-- Получение первых 3 элементов из списка GameGuardian
+local function getFirst3Coords()
     local list = gg.getListItems()
     if #list < 3 then
-        if not findAndSaveCoordsBot() then
+        -- Попытка найти и сохранить координаты
+        findAndSaveCoords()
+        list = gg.getListItems()
+        if #list < 3 then
+            gg.toast("Ошибка: координаты не найдены!")
             return nil
         end
-        list = gg.getListItems()
     end
-    return {x = list[1], y = list[2], z = list[3]}
+    return {list[1], list[2], list[3]}
 end
 
 -- Телепорт
 local function teleport(tx, ty, tz)
-    local saved = getXYZ()
-    if not saved then return end
-    local setList = {
-        {address = saved.x.address, flags = FLOAT, value = tx},
-        {address = saved.y.address, flags = FLOAT, value = ty},
-        {address = saved.z.address, flags = FLOAT, value = tz}
-    }
-    gg.setValues(setList)
-end
+    if not (tx and ty and tz) then
+        return
+    end
 
--- Только смена Z
-local function setZ(tz)
-    local saved = getXYZ()
+    local saved = getFirst3Coords()
     if not saved then return end
-    gg.setValues({{address = saved.z.address, flags = FLOAT, value = tz}})
-end
 
--- Последовательность точек
+    -- Проверяем адреса
+    if not (saved[1].address and saved[2].address and saved[3].address) then
+        gg.toast("Ошибка: адреса координат nil")
+        return
+    end
+
+    gg.setValues({
+        {address = saved[1].address, flags = FLOAT, value = tx},
+        {address = saved[2].address, flags = FLOAT, value = ty},
+        {address = saved[3].address, flags = FLOAT, value = tz}
+    })
+end
 local sequence = {
     {x = -806.40246582031, y = 782.3818359375, z = 13.10230064392},
     {x = -806.40246582031, y = 782.3818359375, z = 0.0},
@@ -1693,24 +1672,19 @@ local sequence = {
     {x = -806.24920654297, y = 790.70220947266, z = 0.0}
 }
 
--- Бот "Нефтезавод"
+-- Основной бот
 function bot_Neftezavod()
-    gg.toast("Старт бота Нефтезавод")
-        teleport(sequence[1].x, sequence[1].y, sequence[1].z)
-        gg.sleep(500)
-
-        setZ(sequence[2].z)
-        gg.sleep(500)
-
-        gg.toast("Ждём 2,5 секунд...")
-        gg.sleep(2500)
-
-        teleport(sequence[3].x, sequence[3].y, sequence[3].z)
-        gg.sleep(500)
-
-        setZ(sequence[4].z)
-        gg.sleep(500)
-        bot_Neftezavod()
+    teleport(sequence[1].x, sequence[1].y, sequence[1].z)
+    gg.sleep(500)
+    teleport(sequence[2].x, sequence[2].y, sequence[2].z)
+    gg.sleep(500)
+    gg.toast("Ждём 2,5 секунд...")
+    gg.sleep(2500)
+    teleport(sequence[3].x, sequence[3].y, sequence[3].z)
+    gg.sleep(500)
+    teleport(sequence[4].x, sequence[4].y, sequence[4].z)
+    gg.sleep(500)
+    bot_Neftezavod()
 end
 
 function saveCurrentPoint()
@@ -2184,9 +2158,9 @@ function findAndSaveCoords()
     if #results > 0 then
         local baseAddr = results[1].address
         local offsets = {
-            {address = baseAddr + (15 * 8), flags = gg.TYPE_FLOAT},
-            {address = baseAddr + (15.5 * 8), flags = gg.TYPE_FLOAT},
-            {address = baseAddr + (14.5 * 8), flags = gg.TYPE_FLOAT}
+            {address = baseAddr + (15 * 8), flags = gg.TYPE_FLOAT, name = "x"},
+            {address = baseAddr + (15.5 * 8), flags = gg.TYPE_FLOAT, name = "y"},
+            {address = baseAddr + (14.5 * 8), flags = gg.TYPE_FLOAT, name = "z"}
         }
 
         local values = gg.getValues(offsets)
