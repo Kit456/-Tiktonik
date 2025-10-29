@@ -1079,7 +1079,7 @@ function HitboxMenu()
 
     gg.setRanges(region)
     gg.searchNumber(targetValue, gg.TYPE_DWORD)
-    local results = gg.getResults(1000)
+    local results = gg.getResults(50)
 
     if #results == 0 then
         gg.toast("No values found")
@@ -1096,7 +1096,7 @@ function HitboxMenu()
         gg.setValues(edits)
     end
 
-    gg.sleep(5000)
+    gg.sleep(60000)
     HitboxMenu()
 end
 
