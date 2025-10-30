@@ -1,12 +1,12 @@
 function mainMenu()
 gg.setVisible(false)
   local choice = gg.choice({
-    "Телепорт",
-    "Транспорт",
-    "Персонаж",
-    "Оружие",
-    "Боты",
-    "Выход"
+    "「 Телепорт 」",
+    "「 Транспорт 」",
+    "「 Персонаж 」",
+    "「 Оружие 」",
+    "「 Боты 」",
+    "「 Выход 」"
   }, nil, "Выберите функцию:")
 
   if choice == 1 then
@@ -59,10 +59,10 @@ end
 function transportMenu()
     gg.setVisible(false)
     local choice = gg.choice({
-        "Включить Gm Car",
-        "Взорвать Машину",
-        "Телепорт с Машиной",
-        "Назад"
+        "🚗 Включить Gm Car",
+        "💥 Взорвать Машину",
+        "🚀 Телепорт с Транспортом",
+        "🔙 Назад"
     }, nil, "Транспорт")
 
     if choice == 1 then
@@ -79,12 +79,13 @@ end
 function PersMenu()
     gg.setVisible(false)
     local choice = gg.choice({
-        "Увеличение хитбоксов",
-        "Быстрый спринт",
-        "Фов",
-        "Дождь",
-        "Изменить ник(New)",
-        "Назад"
+        "🔬 Увеличение хитбоксов",
+        "🏃 Быстрый спринт",
+        "📷 Фов",
+        "🌧️ Дождь",
+        "〽️ Изменить ник",
+        "♥️ Gamemode", 
+        "🔙 Назад"
     }, nil, "Персонаж")
 
     if choice == 1 then
@@ -97,7 +98,9 @@ function PersMenu()
         toggleRain()
     elseif choice == 5 then
         changeNik()
-    elseif choice == 6 or choice == nil then
+    elseif choice == 6 then
+        Gm_pers()
+    elseif choice == 7 or choice == nil then
         mainMenu()
     end
 end
@@ -107,6 +110,8 @@ function Bots()
             "🚖 Бот такси",
             "🏎️ Вин гонки", 
             "✈️ Бот авиа",
+            "🎃 Бот на тыквы",
+            "🍬 Бот на конфеты",
             "🛢️ Бот нефтезавод", 
             "⬅ Назад"
         }, nil, "Меню: Боты")
@@ -118,8 +123,12 @@ function Bots()
         elseif subMenu == 3 then
             botAir()
         elseif subMenu == 4 then
-            bot_Neftezavod()
+            bot_pumps()
         elseif subMenu == 5 then
+            bot_candy()
+        elseif subMenu == 6 then
+            bot_Neftezavod()
+        elseif subMenu == 7 then
             mainMenu()
         end
     end
@@ -129,10 +138,10 @@ local recoilActive = false
 function Gun()
     gg.setVisible(false)
     local choice = gg.choice({
-        "Выдать оружие",
-        "Анти разброс(New)",
-        "Смещение прицела(New)",
-        "Назад"
+        "🔫 Выдать оружие",
+        "🎯 Анти разброс(New)",
+        "💥 Смещение прицела(New)",
+        "🔙 Назад"
     }, nil, "Выберите действие")
 
     if choice == 1 then
@@ -172,7 +181,7 @@ function searchAndReplaceFloat(target, newValue)
     end
 
     gg.setValues(results)
-    gg.toast("Успешно")
+    gg.toast("✅ Успешно")
     gg.clearResults()
 end
 
@@ -187,8 +196,32 @@ function restoreOriginalValues()
     end
 
     gg.setValues(restoreList)
-    gg.toast("Успешно")
+    gg.toast("✅ Успешно")
     modifiedValues = {}
+end
+
+function Gm_pers()
+    gg.clearResults()
+    gg.setRanges(gg.REGION_C_ALLOC)
+    gg.searchNumber("99999.99", gg.TYPE_FLOAT)
+    local results = gg.getResults(1)
+
+    if #results == 0 then
+        gg.alert("❌ Значение 99999.99 не найдено.")
+        return
+    end
+    local targetAddr = results[1].address - (10.5 * 8)
+    local edit = {
+        address = targetAddr,
+        flags = gg.TYPE_FLOAT,
+        value = 3276887
+    }
+
+    gg.setValues({edit})
+    edit.freeze = true
+    gg.addListItems({edit})
+
+    gg.toast("✅ Gm_pers активирован! Первое значение изменено и заморожено.")
 end
 
 function Smeh()
@@ -579,7 +612,7 @@ function applyWeapon(type)
         }
     elseif type == "WEAPON_MINIGUN" then
         offsets = {
-            {address = baseAddr + (35.5 * 8), flags = gg.TYPE_DWORD, value = 25},
+            {address = baseAddr + (35.5 * 8), flags = gg.TYPE_DWORD, value = 20},
             {address = baseAddr + (34 * 8), flags = gg.TYPE_DWORD, value = 38}
         }
     elseif type == "WEAPON_SATCHEL" then
@@ -672,7 +705,7 @@ local weaponNames = {
         gg.toast("Выдано оружие: " .. name)
     else
     gg.setVisible(false)
-        gg.toast("Не удалось выдать оружие.")
+        gg.toast("❌ Не удалось выдать оружие.")
     end
 end
 
@@ -737,7 +770,7 @@ function TeleportPoMet()
         gg.toast("Координаты успешно заменены!")
         mainMenu()
     else
-        gg.toast("Значение не найдено")
+        gg.toast("❌ Значение не найдено")
         mainMenu()
     end
 
@@ -768,7 +801,7 @@ function searchAndReplaceCoords()
     end
 
     if #filtered == 0 then
-        gg.toast("Координаты не найдены")
+        gg.toast("❌ Координаты не найдены")
         teleport()
         return
     end
@@ -792,7 +825,7 @@ function searchAndReplaceCoords()
     local results = gg.getResults(1)
 
     if #results == 0 then
-        gg.toast("Метка не найдена")
+        gg.toast("❌ Метка не найдена")
         mainMenu()
         return
     end
@@ -1079,7 +1112,7 @@ function HitboxMenu()
 
     gg.setRanges(region)
     gg.searchNumber(targetValue, gg.TYPE_DWORD)
-    local results = gg.getResults(1000)
+    local results = gg.getResults(50)
 
     if #results == 0 then
         gg.toast("Значения не найдены")
@@ -1096,7 +1129,7 @@ function HitboxMenu()
         gg.setValues(edits)
     end
 
-    gg.sleep(5000)
+    gg.sleep(60000)
     HitboxMenu()
 end
 
@@ -1532,7 +1565,7 @@ function cycleCheckpoints()
 end
 
 function botAir()
-    toggleFreezeCarHP() 
+    toggleFreezeAirHP() 
     gg.sleep(1500)
     local cands = findCoords()
         if cands then
@@ -1637,7 +1670,7 @@ local function getFirst3Coords()
         findAndSaveCoords()
         list = gg.getListItems()
         if #list < 3 then
-            gg.toast("Ошибка: координаты не найдены!")
+            gg.toast("❌ Ошибка: координаты не найдены!")
             return nil
         end
     end
@@ -1655,7 +1688,7 @@ local function teleport(tx, ty, tz)
 
     -- Проверяем адреса
     if not (saved[1].address and saved[2].address and saved[3].address) then
-        gg.toast("Ошибка: адреса координат nil")
+        gg.toast("❌ Ошибка: адреса координат nil")
         return
     end
 
@@ -1665,9 +1698,48 @@ local function teleport(tx, ty, tz)
         {address = saved[3].address, flags = FLOAT, value = tz}
     })
 end
+
+local pumps = {
+    {x = -2094, y = 1550, z = 45},--1
+    {x = -1822, y = -187, z = 37},--2  
+    {x = -146, y = -2024, z = 32},--3
+    {x = -2728, y = 2794, z = 2},--4
+    {x = -2747, y = 2813, z = 2},--5
+    {x = -2805, y = 2813, z = 2},--6
+    {x = -2798, y = 2777, z = 2},--7
+    {x = -2750, y = 2768, z = 2},--8
+    {x = -2798, y = 2753, z = 2},--9
+    {x = -2791, y = 2726, z = 2},--10
+}
+
+-- Основной бот
+function bot_pumps()
+    teleport(pumps[1].x, pumps[1].y, pumps[1].z)--2
+    gg.sleep(2500)
+    teleport(pumps[2].x, pumps[2].y, pumps[2].z)--2
+    gg.sleep(2500)
+    teleport(pumps[3].x, pumps[3].y, pumps[3].z)--3
+    gg.sleep(2500)
+    teleport(pumps[4].x, pumps[4].y, pumps[4].z)--4
+    gg.sleep(2500)
+    teleport(pumps[5].x, pumps[5].y, pumps[5].z)--5
+    gg.sleep(2500)
+    teleport(pumps[6].x, pumps[6].y, pumps[6].z)--6
+    gg.sleep(2500)
+    teleport(pumps[7].x, pumps[7].y, pumps[7].z)--7
+    gg.sleep(2500)
+    teleport(pumps[8].x, pumps[8].y, pumps[8].z)--8
+    gg.sleep(2500)
+    teleport(pumps[9].x, pumps[9].y, pumps[9].z)--9
+    gg.sleep(2500)
+    teleport(pumps[10].x, pumps[10].y, pumps[10].z)--10
+    gg.sleep(2500)
+    gg.toast("Всё найдено")
+end
+
 local sequence = {
     {x = -806.40246582031, y = 782.3818359375, z = 13.10230064392},
-    {x = -806.40246582031, y = 782.3818359375, z = 0.0},
+    {x = -806.40246582031, y = 782.3818359375, z = 0.0}, 
     {x = -806.24920654297, y = 790.70220947266, z = 13.10230064392},
     {x = -806.24920654297, y = 790.70220947266, z = 0.0}
 }
@@ -1678,57 +1750,13 @@ function bot_Neftezavod()
     gg.sleep(500)
     teleport(sequence[2].x, sequence[2].y, sequence[2].z)
     gg.sleep(500)
-    gg.toast("Ждём 2,5 секунд...")
-    gg.sleep(2500)
+    gg.toast("Ждём 20 секунд...")
+    gg.sleep(20000)
     teleport(sequence[3].x, sequence[3].y, sequence[3].z)
     gg.sleep(500)
     teleport(sequence[4].x, sequence[4].y, sequence[4].z)
     gg.sleep(500)
     bot_Neftezavod()
-end
-
-function saveCurrentPoint()
-    local values = gg.getListItems()
-    if #values < 3 then
-        gg.toast("Сначала найдите координаты")
-        return teleport()
-    end
-
-    local input = gg.prompt({"Имя точки:"}, nil, {"text"})
-    if input and input[1] ~= "" then
-        savedPoints[input[1]] = {
-            x = values[1].value,
-            y = values[2].value,
-            z = values[3].value
-        }
-        savePointsToFile()
-        gg.toast("Точка сохранена!")
-    else
-        gg.toast("Отмена сохранения")
-    end
-    teleportCar()
-end
-
-function chooseSavedPoint()
-    if next(savedPoints) == nil then
-        gg.toast("Нет сохранённых точек")
-        return mainMenu()
-    end
-
-    local names = {}
-    for name in pairs(savedPoints) do
-        table.insert(names, name)
-    end
-
-    table.sort(names)
-    local choice = gg.choice(names, nil, "Выберите точку")
-    if choice then
-        local point = savedPoints[names[choice]]
-        applyTeleport(point.x, point.y, point.z)
-    else
-        gg.toast("Выбор отменён")
-        teleport()
-    end
 end
 
 function cleanupOnExit()
@@ -1754,7 +1782,7 @@ function teleportToLocation(location)
         gg.toast("Телепорт выполнен!")
         mainMenu()
     else
-        gg.toast("Ошибка: нет сохранённых координат")
+        gg.toast("❌ Ошибка: нет сохранённых координат")
         teleport()
     end
 end
@@ -1775,11 +1803,11 @@ function teleportManualCar()
             gg.toast("Телепортация выполнена!")
             mainMenu()
         else
-            gg.toast("Телепорт отменён")
+            gg.toast("❌ Телепорт отменён")
             teleport()
         end
     else
-        gg.toast("Ошибка: не найдены сохранённые координаты!")
+        gg.toast("❌ Ошибка: не найдены сохранённые координаты!")
         teleportCar()
     end
 end
@@ -1804,7 +1832,7 @@ function teleportCar()
             end
         end
     elseif choice == 2 then
-        userSavedPointsMenuCar() 
+        userSavedPointsMenu() 
     elseif choice == 3 then
         teleportManualCar()
     elseif choice == 4 then
@@ -1889,6 +1917,40 @@ function toggleFreezeCarHP()
         gg.toast("❌ Godmode деактивирован")
     end
 end
+
+function toggleFreezeAirHP()
+    gg.clearResults()
+    gg.clearList() 
+    if not hpFrozen then
+        gg.setRanges(gg.REGION_C_ALLOC)
+        gg.searchNumber("4934256341737799680", gg.TYPE_QWORD)
+        gg.refineNumber("4934256341737799680")
+        local results = gg.getResults(1000000)
+
+        if #results > 0 then
+            local setList = {}
+            for i, result in ipairs(results) do
+                local hpAddr = result.address + (0.5 * 8)
+                table.insert(setList, {
+                    address = hpAddr,
+                    flags = gg.TYPE_FLOAT,
+                    value = 12000,
+                    freeze = true
+                })
+            end
+
+            gg.setValues(setList)
+            gg.addListItems(setList)
+            savedItems = setList
+            hpFrozen = true
+            gg.toast("✅ Godmode активирован")
+        else
+            gg.toast("❌ Значение не найдено")
+        end
+        gg.clearResults()
+    end
+end
+
 
 local teleportCategories = {
     ["1.Работы"] = {
@@ -2169,7 +2231,7 @@ function findAndSaveCoords()
         gg.toast("Координаты сохранены!")
         teleport()
     else
-        gg.toast("Значение не найдено")
+        gg.toast("❌ Значение не найдено")
         teleport()
     end
 
@@ -2196,7 +2258,7 @@ function teleportManual()
             teleport()
         end
     else
-        gg.toast("Ошибка: не найдены сохранённые координаты!")
+        gg.toast("❌ Ошибка: не найдены сохранённые координаты!")
         teleport()
     end
 end
@@ -2315,6 +2377,7 @@ function saveCurrentPoint()
 end
 
 function chooseSavedPoint()
+    loadSavedPoints()
     if next(savedPoints) == nil then
         gg.toast("Нет сохранённых точек")
         return mainMenu()
@@ -2363,9 +2426,6 @@ function teleportToLocation(location)
         teleport()
     end
 end
-
-loadSavedPoints()
-mainMenu()
 
 while true do
     if gg.isVisible(true) then
