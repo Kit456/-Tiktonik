@@ -722,7 +722,7 @@ local weaponNames = {
     WEAPON_GOLFCLUB = "Golf Club",
     WEAPON_NITESTICK = "Police baton",
     WEAPON_KNIFE = "Knife",
-    WEAPON_BAT = "Baseball Bat"
+    WEAPON_BAT = "Baseball Bat",
     WEAPON_SHOVEL = "Shovel",
     WEAPON_POOLSTICK = "Billiard cue",
     WEAPON_KATANA = "Katana",
@@ -737,7 +737,7 @@ local weaponNames = {
     WEAPON_TEARGAS = "Tear gas",
     WEAPON_MOLOTOV = "Molotov Cocktail",
     WEAPON_COLT45 = "Colt .45 pistol",
-    WEAPON_SILENCED = "Silenced Pistol"
+    WEAPON_SILENCED = "Silenced Pistol", 
     WEAPON_DESERT_EAGLE = "Desert Eagle",
     WEAPON_SHOTGUN = "Sawed-off shotgun",
     WEAPON_SAWEDOFF = "Double-barreled shotgun",
@@ -758,7 +758,7 @@ local weaponNames = {
     WEAPON_SPRAYCAN = "Can of paint",
     WEAPON_FIREEXTINGUISHER = "Fire extinguisher",
     WEAPON_CAMERA = "Camera",
-    WEAPON_PARACHUTE = "Parachute",
+    WEAPON_PARACHUTE = "Parachute"
 }
     if #offsets > 0 then
         gg.setValues(offsets)
