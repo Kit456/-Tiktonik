@@ -1114,7 +1114,7 @@ function dv1()
     gg.refineNumber("0.7", gg.TYPE_FLOAT)
     revert = gg.getResults(100000)
     gg.editAll("-0.565651", gg.TYPE_FLOAT)
-    gg.toast("❗SPRINT ACTIVATED")❗
+    gg.toast("❗SPRINT ACTIVATED❗")
     gg.clearResults()
 end
 
@@ -1125,7 +1125,7 @@ function dv2()
     gg.refineNumber("-0.565651", gg.TYPE_FLOAT)
     revert = gg.getResults(100000)
     gg.editAll("0.7", gg.TYPE_FLOAT)
-    gg.toast("❗SPRINT DEACTIVATED")❗
+    gg.toast("❗SPRINT DEACTIVATED❗")
     gg.clearResults()
 end
 
@@ -1135,7 +1135,7 @@ function fov1()
     revert = gg.getResults(300)
     gg.editAll("1122469536", gg.TYPE_DWORD)
     gg.clearResults()
-    gg.toast("❗FOV ACTIVATED")❗
+    gg.toast("❗FOV ACTIVATED❗")
 end 
 
 function fov2() 
@@ -1144,7 +1144,7 @@ function fov2()
     revert = gg.getResults(300)
     gg.editAll("1116471296", gg.TYPE_DWORD)
     gg.clearResults()
-    gg.toast("❗FOV DEACTIVATED")❗
+    gg.toast("❗FOV DEACTIVATED❗")
 end 
 
 function dojd1() 
@@ -1153,7 +1153,7 @@ function dojd1()
     revert = gg.getResults(300)
     gg.editAll("-25.84625", gg.TYPE_FLOAT)
     gg.clearResults()
-    gg.toast("❗RAIN ACTIVATED")❗
+    gg.toast("❗RAIN ACTIVATED❗")
 end 
 
 function dojd2() 
@@ -1162,7 +1162,7 @@ function dojd2()
     revert = gg.getResults(300)
     gg.editAll("0.00499999989", gg.TYPE_FLOAT)
     gg.clearResults()
-    gg.toast("❗RAIN DEACTIVATED")❗
+    gg.toast("❗RAIN DEACTIVATED❗")
 end
 
 function HitboxMenu()
