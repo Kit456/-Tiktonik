@@ -351,51 +351,51 @@ end
 function Gun1()
     gg.setVisible(false)
     local menu = gg.choice({
-        " ▶ Choose: brass knuckles",
-        "▶ Choose: Putter",
-        "▶ Choose: baton",
-        "▶ Choose: knife",                
-        "▶ Choose: bat",        
-        "▶ Choose: shovel",      
-        "▶ Choose: stick",     
-        "▶ Choose: katana",       
-        "▶ Choose: saw",        
-        "▶ Choose: dildo",        
-        "▶ Choose: dildo2",        
-        "▶ Choose: Vibrator",        
-        "▶ Choose: Vibrator2",        
-        "▶ Choose: flowers",        
-        "▶ Choose: cane",        
-        "▶ Choose: grenade",        
-        "▶ Choose: gas",        
-        "▶ Choose: molotov",        
-        "▶ Choose: colt45",        
-        "▶ Choose: stun gun",        
-        "▶ Choose: Deagle",        
-        "▶ Choose: shotgun",        
-        "▶ Choose: Bleed",        
-        "▶ Choose: Saved",        
-        "▶ Choose: ultrasound",        
-        "▶ Choose: mp5",        
-        "▶ Choose: acre47",        
-        "▶ Choose: m4",       
-        "▶ Choose: tek9",        
-        "▶ Choose: Rifle",        
-        "▶ Choose: withnaiperka",        
-        "▶ Choose: Grenade Launcher",       
-        "▶ Choose: Flare Gun",       
-        "▶ Choose: flamethrower",        
-        "▶ Choose: Minigun",        
-        "▶ Choose: Velcro",        
-        "▶ Choose: Activator",        
-        "▶ Choose: spray",        
-        "▶ Choose: Fire Extinguisher",        
-        "▶ Choose: Camera",        
-        "▶ Choose: thermal imager",        
-        "▶ Choose: thermal imager2",        
-        "▶ Choose: parachute",        
-        "❌ Exit"
-    }, nil, "Select a weapon:")
+       "▶ Select: brass knuckles", 
+       "▶ Select: club", 
+       "▶ Select: baton", 
+       "▶ Select: knife", 
+       "▶ Select: bat", 
+       "▶ Select: shovel", 
+       "▶ Select: stick", 
+       "▶ Select: katana", 
+       "▶ Select: saw", 
+       "▶ Select: dildo", 
+       "▶ Select: dildo2", 
+       "▶ Select: vibrator", 
+       "▶ Select: vibrator2", 
+       "▶ Select: flowers", 
+       "▶ Select: cane", 
+       "▶ Select: grenade", 
+       "▶ Select: gas", 
+       "▶ Select: molotov", 
+       "▶ Select: Colt .45", 
+       "▶ Select: taser", 
+       "▶ Select: Deagle", 
+       "▶ Select: shotgun", 
+       "▶ Select: sawn-off", 
+       "▶ Select: SPAS", 
+       "▶ Select: Uzi", 
+       "▶ Select: MP5", 
+       "▶ Select: ACR 47", 
+       "▶ Select: M4", 
+       "▶ Select: Tec-9", 
+       "▶ Select: rifle", 
+       "▶ Select: sniper rifle", 
+       "▶ Select: grenade launcher", 
+       "▶ Select: rocket launcher", 
+       "▶ Select: flamethrower", 
+       "▶ Select: minigun", 
+       "▶ Select: sticky bomb", 
+       "▶ Select: detonator", 
+       "▶ Select: spray", 
+       "▶ Select: fire extinguisher", 
+       "▶ Select: camera", 
+       "▶ Select: thermal vision", 
+       "▶ Select: thermal vision2", 
+       "▶ Select: parachute", 
+        "🔙 Back"
+    }, nil, "Choose a weapon:")
 
     if menu == 1 then
         applyWeapon("WEAPON_BRASSKNUCKLE")
@@ -673,7 +673,7 @@ function applyWeapon(type)
         }
     elseif type == "WEAPON_MINIGUN" then
         offsets = {
-            {address = baseAddr + (35.5 * 8), flags = gg.TYPE_DWORD, value = 20},
+            {address = baseAddr + (35.5 * 8), flags = gg.TYPE_DWORD, value = 25},
             {address = baseAddr + (34 * 8), flags = gg.TYPE_DWORD, value = 38}
         }
     elseif type == "WEAPON_SATCHEL" then
@@ -719,27 +719,27 @@ function applyWeapon(type)
     end
 local weaponNames = {
     WEAPON_BRASSKNUCKLE = "Brass knuckles",
-    WEAPON_GOLFCLUB = "Golf Club",
+    WEAPON_GOLFCLUB = "Golf club",
     WEAPON_NITESTICK = "Police baton",
     WEAPON_KNIFE = "Knife",
-    WEAPON_BAT = "Baseball Bat",
-    WEAPON_SHOVEL = "Shovel",
+    WEAPON_BAT = "Baseball bat",
+    WEAPON_SHOVEL = "Spade",
     WEAPON_POOLSTICK = "Billiard cue",
     WEAPON_KATANA = "Katana",
     WEAPON_CHAINSAW = "Chainsaw",
     WEAPON_DILDO1 = "Purple",
     WEAPON_DILDO2 = "Grey",
     WEAPON_VIBE1 = "Pink Vibrator",
-    WEAPON_VIBE2 = "White vibrator",
-    WEAPON_FLOWER = "Bouquet of flowers",
+    WEAPON_VIBE2 = "White Vibrator",
+    WEAPON_FLOWER = "Posy",
     WEAPON_CANE = "Cane",
     WEAPON_GRENADE = "Grenade",
     WEAPON_TEARGAS = "Tear gas",
-    WEAPON_MOLOTOV = "Molotov Cocktail",
+    WEAPON_MOLOTOV = "Molotov cocktail",
     WEAPON_COLT45 = "Colt .45 pistol",
-    WEAPON_SILENCED = "Silenced Pistol", 
+    WEAPON_SILENCED = "Pistol with silencer",
     WEAPON_DESERT_EAGLE = "Desert Eagle",
-    WEAPON_SHOTGUN = "Sawed-off shotgun",
+    WEAPON_SHOTGUN = "Edge",
     WEAPON_SAWEDOFF = "Double-barreled shotgun",
     WEAPON_SPAS12 = "SPAS-12",
     WEAPON_UZI = "Ultrasound",
@@ -747,18 +747,18 @@ local weaponNames = {
     WEAPON_AK47 = "АК-47",
     WEAPON_M4 = "M4",
     WEAPON_TEC9 = "TEC-9",
-    WEAPON_RIFLE = "Hunting Rifle",
-    WEAPON_SNIPER = "Sniper Rifle",
+    WEAPON_RIFLE = "Hunting rifle",
+    WEAPON_SNIPER = "Sniper rifle",
     WEAPON_ROCKET_LAUNCHER = "RPG",
     WEAPON_HEATSEEKER = "Homing RPG",
     WEAPON_FLAMETHROWER = "Flamethrower",
     WEAPON_MINIGUN = "Minigun",
     WEAPON_SATCHEL = "Explosives",
     WEAPON_BOMB = "Bomb",
-    WEAPON_SPRAYCAN = "Can of paint",
+    WEAPON_SPRAYCAN = "Spray paint",
     WEAPON_FIREEXTINGUISHER = "Fire extinguisher",
     WEAPON_CAMERA = "Camera",
-    WEAPON_PARACHUTE = "Parachute"
+    WEAPON_PARACHUTE = "Parachute",
 }
     if #offsets > 0 then
         gg.setValues(offsets)
@@ -766,7 +766,7 @@ local weaponNames = {
         gg.toast("Weapons issued: " .. name)
     else
     gg.setVisible(false)
-        gg.toast(" ❌ Failed to issue weapons.")
+        gg.toast("Failed to issue weapons.")
     end
 end
 
@@ -1114,7 +1114,7 @@ function dv1()
     gg.refineNumber("0.7", gg.TYPE_FLOAT)
     revert = gg.getResults(100000)
     gg.editAll("-0.565651", gg.TYPE_FLOAT)
-    gg.toast("❗SPRINT ACTIVATED❗")
+    gg.toast("❗Sprint activated❗")
     gg.clearResults()
 end
 
@@ -1125,7 +1125,7 @@ function dv2()
     gg.refineNumber("-0.565651", gg.TYPE_FLOAT)
     revert = gg.getResults(100000)
     gg.editAll("0.7", gg.TYPE_FLOAT)
-    gg.toast("❗SPRINT DEACTIVATED❗")
+    gg.toast("❗Sprint deactivated❗")
     gg.clearResults()
 end
 
@@ -1135,7 +1135,7 @@ function fov1()
     revert = gg.getResults(300)
     gg.editAll("1122469536", gg.TYPE_DWORD)
     gg.clearResults()
-    gg.toast("❗FOV ACTIVATED❗")
+    gg.toast("❗FOV Activated❗")
 end 
 
 function fov2() 
@@ -1144,7 +1144,7 @@ function fov2()
     revert = gg.getResults(300)
     gg.editAll("1116471296", gg.TYPE_DWORD)
     gg.clearResults()
-    gg.toast("❗FOV DEACTIVATED❗")
+    gg.toast("❗FOV Deactivated❗")
 end 
 
 function dojd1() 
@@ -1153,7 +1153,7 @@ function dojd1()
     revert = gg.getResults(300)
     gg.editAll("-25.84625", gg.TYPE_FLOAT)
     gg.clearResults()
-    gg.toast("❗RAIN ACTIVATED❗")
+    gg.toast("❗Rain activated❗")
 end 
 
 function dojd2() 
@@ -1162,7 +1162,7 @@ function dojd2()
     revert = gg.getResults(300)
     gg.editAll("0.00499999989", gg.TYPE_FLOAT)
     gg.clearResults()
-    gg.toast("❗RAIN DEACTIVATED❗")
+    gg.toast("❗Rain deactivated❗")
 end
 
 function HitboxMenu()
@@ -2175,7 +2175,7 @@ function bax()
     revert = gg.getResults(1000)
     gg.editAll("1000.0234765", gg.TYPE_FLOAT)
     gg.clearResults()
-    gg.toast("❗FEATURE ACTIVATED")❗
+    gg.toast("❗Function activated❗")
 end 
 
 function bax2() 
@@ -2184,7 +2184,7 @@ function bax2()
     revert = gg.getResults(1000)
     gg.editAll("250.0", gg.TYPE_FLOAT)
     gg.clearResults()
-    gg.toast("❗FUNCTION DEACTIVATED")❗
+    gg.toast("❗Function deactivated❗")
 end
 
 local hpFrozen = false
