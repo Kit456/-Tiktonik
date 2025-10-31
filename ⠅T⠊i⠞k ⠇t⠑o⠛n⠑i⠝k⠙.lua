@@ -84,7 +84,8 @@ function PersMenu()
         "📷 Фов",
         "🌧️ Дождь",
         "〽️ Изменить ник",
-        "♥️ Gamemode", 
+        "♥️ Gamemode",
+        "🪖 Броня",
         "🔙 Назад"
     }, nil, "Персонаж")
 
@@ -100,7 +101,9 @@ function PersMenu()
         changeNik()
     elseif choice == 6 then
         Gm_pers()
-    elseif choice == 7 or choice == nil then
+    elseif choice == 7 then
+        Gm_armor()
+    elseif choice == 8 or choice == nil then
         mainMenu()
     end
 end
@@ -111,7 +114,6 @@ function Bots()
             "🏎️ Вин гонки", 
             "✈️ Бот авиа",
             "🎃 Бот на тыквы",
-            "🍬 Бот на конфеты",
             "🛢️ Бот нефтезавод", 
             "⬅ Назад"
         }, nil, "Меню: Боты")
@@ -125,10 +127,8 @@ function Bots()
         elseif subMenu == 4 then
             bot_pumps()
         elseif subMenu == 5 then
-            bot_candy()
-        elseif subMenu == 6 then
             bot_Neftezavod()
-        elseif subMenu == 7 then
+        elseif subMenu == 6 then
             mainMenu()
         end
     end
@@ -139,8 +139,8 @@ function Gun()
     gg.setVisible(false)
     local choice = gg.choice({
         "🔫 Выдать оружие",
-        "🎯 Анти разброс(New)",
-        "💥 Смещение прицела(New)",
+        "🎯 Анти разброс",
+        "💥 Смещение прицела",
         "🔙 Назад"
     }, nil, "Выберите действие")
 
@@ -200,6 +200,31 @@ function restoreOriginalValues()
     modifiedValues = {}
 end
 
+
+function Gm_armor()
+    gg.clearResults()
+    gg.setRanges(gg.REGION_C_ALLOC)
+    gg.searchNumber("99999.99", gg.TYPE_FLOAT)
+    local results = gg.getResults(1)
+
+    if #results == 0 then
+        gg.alert("❌ Значение не найдено.")
+        return
+    end
+    local targetAddr = results[1].address - (9.5 * 8)
+    local edit = {
+        address = targetAddr,
+        flags = gg.TYPE_FLOAT,
+        value = 3276887
+    }
+
+    gg.setValues({edit})
+    edit.freeze = true
+    gg.addListItems({edit})
+
+    gg.toast("✅ Gamemode активирован.")
+end
+
 function Gm_pers()
     gg.clearResults()
     gg.setRanges(gg.REGION_C_ALLOC)
@@ -207,7 +232,7 @@ function Gm_pers()
     local results = gg.getResults(1)
 
     if #results == 0 then
-        gg.alert("❌ Значение 99999.99 не найдено.")
+        gg.alert("❌ Значение не найдено.")
         return
     end
     local targetAddr = results[1].address - (10.5 * 8)
@@ -221,7 +246,7 @@ function Gm_pers()
     edit.freeze = true
     gg.addListItems({edit})
 
-    gg.toast("✅ Gm_pers активирован! Первое значение изменено и заморожено.")
+    gg.toast("✅ Gamemode активирован.")
 end
 
 function Smeh()
@@ -1710,31 +1735,285 @@ local pumps = {
     {x = -2750, y = 2768, z = 2},--8
     {x = -2798, y = 2753, z = 2},--9
     {x = -2791, y = 2726, z = 2},--10
+    {x = -2748, y = 2730, z = 2},--11
+    {x = -2667, y = 2883, z = 2},--12
+    {x = -2481, y = 2846, z = 5},--13
+    {x = -1392, y = 2517, z = 44},--14
+    {x = -1607, y = 1457, z = 50},--15
+    {x = -2094, y = 1128, z = 5},--16
+    {x = -2709, y = 2134, z = 27},--17
+    {x = -2214, y = -39, z = 13},--18
+    {x = -2217, y = 186, z = 11},--19
+    {x = -2034, y = -28, z = 12},--20
+    {x = -1996, y = -179, z = 11},--21
+    {x = 2351, y = 1989, z = 17},--22
+    {x = 1371, y = 963, z = 14},--23
+    {x = 1642, y = 1010, z = 14},--24
+    {x = 1592, y = 1003, z = 14},--25
+    {x = 1858, y = 2038, z = 16},--26
+    {x = 445, y = 1171, z = 13},--27
+    {x = 342, y = -1926, z = 42},--28
+    {x = -1077, y = -1616, z = 49},--29
+    {x = -777, y = 782, z = 15},--30
+    {x = -141, y = 853, z = 13},--31
+    {x = -116, y = 811, z = 13},--32
+    {x = 148, y = 763, z = 13},--33
+    {x = 355, y = 1360, z = 12},--34
+    {x = -2239, y = 1965, z = 51},--35
+    {x = -1966, y = -291, z = 22},--36
+    {x = -2172, y = 311, z = 12},--37
+    {x = -2229, y = 296, z = 12},--38
+    {x = -2142, y = 250, z = 12},--39
+    {x = -2065, y = 264, z = 11},--40
+    {x = -2073, y = 175, z = 11},--41
+    {x = -2167, y = 202, z = 13},--42
+    {x = -2183, y = 247, z = 12},--43
+    {x = -2709, y = 2134, z = 27},--44
+    {x = -2517, y = 181, z = 12},--45
+    {x = -2217, y = 186, z = 11},--46
+    {x = -2571, y = 109, z = 12},--47
+    {x = -2408, y = 397, z = 11},--48
+    {x = 2516, y = -188, z = 4},--49
+    {x = 2043, y = 1396, z = 27},--50
+    {x = 2554, y = -2188, z = 23},--51
+    {x = 2325, y = -1814, z = 23},--52
+    {x = 533, y = 329, z = 13},--53
+    {x = 1133, y = 423, z = 13},--54
+    {x = 412, y = 579, z = 13},--55
+    {x = 181, y = 446, z = 12},--56
+    {x = -285, y = 100, z = 14},--57
+    {x = -458, y = 899, z = 12},--58
+    {x = -44, y = 909, z = 13},--59
+    {x = 1896, y = 1909, z = 14},--60
+    {x = 1796, y = 2514, z = 16},--61
+    {x = -218, y = 1024, z = 13},--62
+    {x = -1885, y = 201, z = 12},--63
+    {x = 1874, y = 1224, z = 34},--64
+    {x = 158, y = 2022, z = 9},--65
+    {x = -8, y = 1360, z = 13}--66
 }
 
 -- Основной бот
 function bot_pumps()
     teleport(pumps[1].x, pumps[1].y, pumps[1].z)--2
-    gg.sleep(2500)
+    gg.sleep(3000)
     teleport(pumps[2].x, pumps[2].y, pumps[2].z)--2
-    gg.sleep(2500)
+    gg.sleep(3000)
     teleport(pumps[3].x, pumps[3].y, pumps[3].z)--3
-    gg.sleep(2500)
+    gg.sleep(3000)
     teleport(pumps[4].x, pumps[4].y, pumps[4].z)--4
-    gg.sleep(2500)
+    gg.sleep(3000)
     teleport(pumps[5].x, pumps[5].y, pumps[5].z)--5
-    gg.sleep(2500)
+    gg.sleep(3000)
     teleport(pumps[6].x, pumps[6].y, pumps[6].z)--6
-    gg.sleep(2500)
+    gg.sleep(3000)
     teleport(pumps[7].x, pumps[7].y, pumps[7].z)--7
-    gg.sleep(2500)
+    gg.sleep(3000)
     teleport(pumps[8].x, pumps[8].y, pumps[8].z)--8
-    gg.sleep(2500)
+    gg.sleep(3000)
     teleport(pumps[9].x, pumps[9].y, pumps[9].z)--9
-    gg.sleep(2500)
+    gg.sleep(3000)
     teleport(pumps[10].x, pumps[10].y, pumps[10].z)--10
-    gg.sleep(2500)
+    gg.sleep(3000)
+    teleport(pumps[11].x, pumps[11].y, pumps[11].z)--11
+    gg.sleep(3000)
+    teleport(pumps[12].x, pumps[12].y, pumps[12].z)--12
+    gg.sleep(3000)
+    teleport(pumps[13].x, pumps[13].y, pumps[13].z)--13
+    gg.sleep(3000)
+    teleport(pumps[14].x, pumps[14].y, pumps[14].z)--14
+    gg.sleep(3000)
+    teleport(pumps[15].x, pumps[15].y, pumps[15].z)--15
+    gg.sleep(3000)
+    teleport(pumps[16].x, pumps[16].y, pumps[16].z)--16
+    gg.sleep(3000)
+    teleport(pumps[17].x, pumps[17].y, pumps[17].z)--17
+    gg.sleep(3000)
+    teleport(pumps[18].x, pumps[18].y, pumps[18].z)--18
+    gg.sleep(3000)
+    teleport(pumps[19].x, pumps[19].y, pumps[19].z)--19
+    gg.sleep(3000)
+    teleport(pumps[20].x, pumps[20].y, pumps[20].z)--20
+    gg.sleep(3000)
+    teleport(pumps[21].x, pumps[21].y, pumps[21].z)--21
+    gg.sleep(3000)
+    teleport(pumps[22].x, pumps[22].y, pumps[22].z)--22
+    gg.sleep(3000)
+    teleport(pumps[23].x, pumps[23].y, pumps[23].z)--23
+    gg.sleep(3000)
+    teleport(pumps[24].x, pumps[24].y, pumps[24].z)--24
+    gg.sleep(3000)
+    teleport(pumps[25].x, pumps[25].y, pumps[25].z)--25
+    gg.sleep(3000)
+    teleport(pumps[26].x, pumps[26].y, pumps[26].z)--26
+    gg.sleep(3000)
+    teleport(pumps[27].x, pumps[27].y, pumps[27].z)--27
+    gg.sleep(3000)
+    teleport(pumps[28].x, pumps[28].y, pumps[28].z)--28
+    gg.sleep(3000)
+    teleport(pumps[29].x, pumps[29].y, pumps[29].z)--29
+    gg.sleep(3000)
+    teleport(pumps[30].x, pumps[30].y, pumps[30].z)--30
+    gg.sleep(3000)
+    teleport(pumps[31].x, pumps[31].y, pumps[31].z)--31
+    gg.sleep(3000)
+    teleport(pumps[32].x, pumps[32].y, pumps[32].z)--32
+    gg.sleep(3000)
+    teleport(pumps[33].x, pumps[33].y, pumps[33].z)--33
+    gg.sleep(3000)
+    teleport(pumps[34].x, pumps[34].y, pumps[34].z)--34
+    gg.sleep(3000)
+    teleport(pumps[35].x, pumps[35].y, pumps[35].z)--35
+    gg.sleep(3000)
+    teleport(pumps[36].x, pumps[36].y, pumps[36].z)--36
+    gg.sleep(3000)
+    teleport(pumps[37].x, pumps[37].y, pumps[37].z)--37
+    gg.sleep(3000)
+    teleport(pumps[38].x, pumps[38].y, pumps[38].z)--38
+    gg.sleep(3000)
+    teleport(pumps[39].x, pumps[39].y, pumps[39].z)--39
+    gg.sleep(3000)
+    teleport(pumps[40].x, pumps[40].y, pumps[40].z)--40
+    gg.sleep(3000)
+    teleport(pumps[41].x, pumps[41].y, pumps[41].z)--41
+    gg.sleep(3000)
+    teleport(pumps[42].x, pumps[42].y, pumps[42].z)--42
+    gg.sleep(3000)
+    teleport(pumps[43].x, pumps[43].y, pumps[43].z)--43
+    gg.sleep(3000)
+    teleport(pumps[44].x, pumps[44].y, pumps[44].z)--44
+    gg.sleep(3000)
+    teleport(pumps[45].x, pumps[45].y, pumps[45].z)--45
+    gg.sleep(3000)
+    teleport(pumps[46].x, pumps[46].y, pumps[46].z)--46
+    gg.sleep(3000)
+    teleport(pumps[47].x, pumps[47].y, pumps[47].z)--47
+    gg.sleep(3000)
+    teleport(pumps[48].x, pumps[48].y, pumps[48].z)--48
+    gg.sleep(3000)
+    teleport(pumps[49].x, pumps[49].y, pumps[49].z)--49
+    gg.sleep(3000)
+    teleport(pumps[50].x, pumps[50].y, pumps[50].z)--50
+    gg.sleep(3000)
+    teleport(pumps[51].x, pumps[51].y, pumps[51].z)--51
+    gg.sleep(3000)
+    teleport(pumps[52].x, pumps[52].y, pumps[52].z)--52
+    gg.sleep(3000)
+    teleport(pumps[53].x, pumps[53].y, pumps[53].z)--53
+    gg.sleep(3000)
+    teleport(pumps[54].x, pumps[54].y, pumps[54].z)--54
+    gg.sleep(3000)
+    teleport(pumps[55].x, pumps[55].y, pumps[55].z)--55
+    gg.sleep(3000)
+    teleport(pumps[56].x, pumps[56].y, pumps[56].z)--56
+    gg.sleep(3000)
+    teleport(pumps[57].x, pumps[57].y, pumps[57].z)--57
+    gg.sleep(3000)
+    teleport(pumps[58].x, pumps[58].y, pumps[58].z)--58
+    gg.sleep(3000)
+    teleport(pumps[59].x, pumps[59].y, pumps[59].z)--59
+    gg.sleep(3000)
+    teleport(pumps[60].x, pumps[60].y, pumps[60].z)--60
+    gg.sleep(3000)
+    teleport(pumps[61].x, pumps[61].y, pumps[61].z)--61
+    gg.sleep(3000)
+    teleport(pumps[62].x, pumps[62].y, pumps[62].z)--62
+    gg.sleep(3000)
+    teleport(pumps[63].x, pumps[63].y, pumps[63].z)--63
+    gg.sleep(3000)
+    teleport(pumps[64].x, pumps[64].y, pumps[64].z)--64
+    gg.sleep(3000)
+    teleport(pumps[65].x, pumps[65].y, pumps[65].z)--65
+    gg.sleep(3000)
+    teleport(pumps[66].x, pumps[66].y, pumps[66].z)--66
+    gg.sleep(3000)
     gg.toast("Всё найдено")
+end
+
+local candy = {
+    {x = 1597, y = 984, z = 14}, --1
+    {x = 1621, y = 991, z = 14},--2  
+    {x = 1615, y = 1013, z = 14},--3
+    {x = 1605, y = 1061, z = 14},--4
+    {x = 1620, y = 1044, z = 14},--5
+    {x = 1599, y = 1075, z = 14},--6
+    {x = 1560, y = 1062, z = 14},--7
+    {x = 1595, y = 1065, z = 18},--8
+    {x = 1636, y = 1069, z = 18},--9
+    {x = 1648, y = 1073, z = 20},--10
+    {x = 1655, y = 1070, z = 14},--11
+    {x = 1642, y = 1036, z = 14},--12
+    {x = 1676, y = 1057, z = 17},--13
+    {x = 1693, y = 996, z = 14},--14
+    {x = 1711, y = 977, z = 14},--15
+    {x = 1671, y = 962, z = 14},--16
+    {x = 1688, y = 973, z = 16},--17
+    {x = 1643, y = 1002, z = 19},--18
+    {x = 1669, y = 1016, z = 13},--19
+    {x = 1645, y = 989, z = 14},--20
+    {x = 1620, y = 961, z = 14},--21
+    {x = 1636, y = 1013, z = 14},--22
+    {x = 1685, y = 1026, z = 14},--23
+    {x = 1643, y = 1088, z = 14},--24
+    {x = 1669, y = 1085, z = 14},--25
+    {x = 1593, y = 1043, z = 14}--26   
+}
+
+-- Основной бот
+function bot_candy()
+    teleport(candy[1].x, candy[1].y, candy[1].z)--1
+    gg.sleep(2000)
+    teleport(candy[2].x, candy[2].y, candy[2].z)--2
+    gg.sleep(2000)
+    teleport(candy[3].x, candy[3].y, candy[3].z)--3
+    gg.sleep(2000)
+    teleport(candy[4].x, candy[4].y, candy[4].z)--4
+    gg.sleep(2000)
+    teleport(candy[5].x, candy[5].y, candy[5].z)--5
+    gg.sleep(2000)
+    teleport(candy[6].x, candy[6].y, candy[6].z)--6
+    gg.sleep(2000)
+    teleport(candy[7].x, candy[7].y, candy[7].z)--7
+    gg.sleep(2000)
+    teleport(candy[8].x, candy[8].y, candy[8].z)--8
+    gg.sleep(2000)
+    teleport(candy[9].x, candy[9].y, candy[9].z)--9
+    gg.sleep(2000)
+    teleport(candy[10].x, candy[10].y, candy[10].z)--10
+    gg.sleep(2000)
+    teleport(candy[11].x, candy[11].y, candy[11].z)--11
+    gg.sleep(2000)
+    teleport(candy[12].x, candy[12].y, candy[12].z)--12
+    gg.sleep(2000)
+    teleport(candy[13].x, candy[13].y, candy[13].z)--13
+    gg.sleep(2000)
+    teleport(candy[14].x, candy[14].y, candy[14].z)--14
+    gg.sleep(2000)
+    teleport(candy[15].x, candy[15].y, candy[15].z)--15
+    gg.sleep(2000)
+    teleport(candy[16].x, candy[16].y, candy[16].z)--16
+    gg.sleep(2000)
+    teleport(candy[17].x, candy[17].y, candy[17].z)--17
+    gg.sleep(2000)
+    teleport(candy[18].x, candy[18].y, candy[18].z)--18
+    gg.sleep(2000)
+    teleport(candy[19].x, candy[19].y, candy[19].z)--19
+    gg.sleep(2000)
+    teleport(candy[20].x, candy[20].y, candy[20].z)--20
+    gg.sleep(2000)
+    teleport(candy[21].x, candy[21].y, candy[21].z)--21
+    gg.sleep(2000)
+    teleport(candy[22].x, candy[22].y, candy[22].z)--22
+    gg.sleep(2000)
+    teleport(candy[23].x, candy[23].y, candy[23].z)--23
+    gg.sleep(2000)
+    teleport(candy[24].x, candy[24].y, candy[24].z)--24
+    gg.sleep(2000)
+    teleport(candy[25].x, candy[25].y, candy[25].z)--25
+    gg.sleep(2000)
+    teleport(candy[26].x, candy[26].y, candy[26].z)--26
+    gg.sleep(2000)
+    bot_candy() 
 end
 
 local sequence = {
