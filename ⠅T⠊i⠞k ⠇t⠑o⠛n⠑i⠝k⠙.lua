@@ -141,6 +141,7 @@ function Gun()
         "🔫 Выдать оружие",
         "🎯 Анти разброс",
         "💥 Смещение прицела",
+        "☄️ Анти перезарядка",
         "🔙 Назад"
     }, nil, "Выберите действие")
 
@@ -150,10 +151,9 @@ function Gun()
         toggleRecoil()
     elseif choice == 3 then
         Smeh()
-    elseif choice == 4 or choice == nil then
-        mainMenu()
-    else
-        gg.toast("Ничего не выбрано")
+    elseif choice == 4 then
+        Gm_weapons()
+    elseif choice == 5 or choice == nil then
         mainMenu()
     end
 end
@@ -278,6 +278,45 @@ function Smeh()
         restoreOriginalValues()
         gg.clearResults()
     end
+end
+
+function Gm_weapons()
+    gg.setVisible(false)
+    local choice = gg.choice({
+        "🔫 AK-47",
+        "💥 Desert Eagle",
+        "🔧 M4",
+        "⚙️ MP5",
+        "🧨 Shotgun",
+        "🔙 Назад"
+    }, nil, "⚙️ Выбери оружие:")
+
+    if choice == 1 then
+        Gm_weapon("AK-47", 27, 27.5)
+    elseif choice == 2 then
+        Gm_weapon("Desert Eagle", 15, 15.5)
+    elseif choice == 3 then
+        Gm_weapon("M4", 27, 27.5)
+    elseif choice == 4 then
+        Gm_weapon("MP5", 23, 23.5)
+    elseif choice == 5 then
+        Gm_weapon("Shotgun", 19, 19.5)
+    end
+end
+
+function Gm_weapon(name, offset_main, offset_ref)
+    gg.clearResults()
+    gg.setRanges(gg.REGION_C_ALLOC)
+    gg.searchNumber("99999.99", gg.TYPE_FLOAT, false, gg.SIGN_EQUAL, 0, -1)
+    local results = gg.getResults(1)
+    local baseAddr = results[1].address
+    local targetAddr = baseAddr + (offset_main * 8)
+    local refAddr = baseAddr + (offset_ref * 8)
+    local refValue = gg.getValues({{address = refAddr, flags = gg.TYPE_DWORD}})[1].value
+    gg.setValues({{address = targetAddr, flags = gg.TYPE_DWORD, value = refValue}})
+    gg.addListItems({{address = targetAddr, flags = gg.TYPE_DWORD, freeze = true}})
+
+    gg.toast("✅ Активировано")
 end
 
 function toggleRecoil()
