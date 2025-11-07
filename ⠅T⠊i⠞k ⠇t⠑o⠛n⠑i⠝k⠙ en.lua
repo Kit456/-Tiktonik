@@ -2,11 +2,11 @@ function mainMenu()
 gg.setVisible(false)
   local choice = gg.choice({
     "「 Teleport 」",
-    "「 Transport  」",
-    "「 Personage  」",
-    "「 Weapon  」",
-    "「 Overshoes  」",
-    "「 Exit  」"
+    "「 Transport 」",
+    "「 Personage 」",
+    "「 Weapon 」",
+    "「 Overshoes 」",
+    "「 Exit 」"
   }, nil, "Select a function:")
 
   if choice == 1 then
@@ -28,12 +28,12 @@ function teleport()
     gg.setVisible(false)
     local choice = gg.choice({
         "🔍 Find and save coordinates",
-        "🚀 Teleport ",
-        "📍 Select Teleport Point ",
+        "🚀 Teleport",
+        "📍 Select Teleport Point",
         "💾 Saved Points",
-        "✅ Teleport by mark ",
-        "🧾 Teleport by checkpoint ",
-        "🔙 Back "
+        "✅ Teleport by mark",
+        "🧾 Teleport by checkpoint",
+        "🔙 Back"
     }, nil, "Choose an action")
 
     if choice == 1 then
@@ -50,17 +50,22 @@ function teleport()
         TeleportPoMet()
     elseif choice == 7 then
         mainMenu()
+    else
+        gg.toast("Nothing selected")
+        mainMenu()
     end
 end
 
 function transportMenu()
     gg.setVisible(false)
     local choice = gg.choice({
-        "🚗 Turn on Gm Car",
-        "💥 Blow up the car ",
-        "🚀 Teleport with Vehicles ",
+        "🚗 Gm Car",
+        "💥 Blow up the car",
+        "🚀 Teleport with Vehicles",
+        "🤸 Upheaval of transport(New)", 
+        "🏎️ Increased speed(New)",
         "🔙 Back"
-    }, nil, "Transport")
+    }, nil, "Vehicle")
 
     if choice == 1 then
         toggleFreezeCarHP()
@@ -68,7 +73,11 @@ function transportMenu()
         toggleBax()
     elseif choice == 3 then
         teleportCar()
-    elseif choice == 4 or choice == nil then
+    elseif choice == 4 then
+        flip()
+    elseif choice == 5 then
+        speedcars()
+    elseif choice == 6 or choice == nil then
         mainMenu()
     end
 end
@@ -77,13 +86,15 @@ function PersMenu()
     gg.setVisible(false)
     local choice = gg.choice({
         "🔬 Increasing hitboxes",
-        "🏃 Quick Sprint ",
+        "🏃 Quick Sprint",
+        "👟 Infinite Sprint(New)",
         "📷 FOV",
-        "🌧️ Rain ",
-        "〽️ Change nickname ",
-        "♥️ Gamemode ",
-        "🪖 Armour ",
-        "🔙 Back "
+        "🌧️ Rain",
+        "〽️ Change nickname",
+        "♥️ Gamemode",
+        "🪖 Armour",
+        "🚄 SpeedHack(New)",
+        "🔙 Back"
     }, nil, "Personage")
 
     if choice == 1 then
@@ -91,29 +102,32 @@ function PersMenu()
     elseif choice == 2 then
         toggleSprint()
     elseif choice == 3 then
-        toggleFov()
+        Sprint()
     elseif choice == 4 then
-        toggleRain()
+        toggleFov()
     elseif choice == 5 then
-        changeNik()
+        toggleRain()
     elseif choice == 6 then
-        Gm_pers()
+        changeNik()
     elseif choice == 7 then
+        Gm_pers()
+    elseif choice == 8 then
         Gm_armor()
-    elseif choice == 8 or choice == nil then
+    elseif choice == 9 then
+        SpeedHack()
+    elseif choice == 9 or choice == nil then
         mainMenu()
     end
 end
 
 function Bots()
         local subMenu = gg.choice({
-            "🚖 Bot Taxi ",
-            "🏎️ Win Racing ", 
+            "🚖 Taxi Bot",
+            "🏎️ Win Racing", 
             "✈️ Bot Avia",
-            "🎃 Pumpkin Bot ",
-            "🛢️ Bot Oil Refinery ", 
-            "⬅ Back"
-        }, nil, "Menu: Bots")
+            "🛢️ Bot Oil Refinery", 
+            "🔙 Back"
+        }, nil, "Overshoes")
 
         if subMenu == 1 then
             botTaxi()
@@ -122,10 +136,8 @@ function Bots()
         elseif subMenu == 3 then
             botAir()
         elseif subMenu == 4 then
-            bot_pumps()
-        elseif subMenu == 5 then
             bot_Neftezavod()
-        elseif subMenu == 6 then
+        elseif subMenu == 5 then
             mainMenu()
         end
     end
@@ -136,9 +148,8 @@ function Gun()
     gg.setVisible(false)
     local choice = gg.choice({
         "🔫 Give Up Weapons",
-        "🎯 Anti Spread ",
-        "💥 Crosshair offset ",
-        "☄️ Anti Reload ",
+        "💥 Anti Spread",
+        "🎯 Crosshair offset",
         "🔙 Back"
     }, nil, "Choose an action")
 
@@ -148,11 +159,129 @@ function Gun()
         toggleRecoil()
     elseif choice == 3 then
         Smeh()
-    elseif choice == 4 then
-        Gm_weapons()
-    elseif choice == 5 or choice == nil then
+    elseif choice == 4 or choice == nil then
+        mainMenu()
+    else
+        gg.toast("Nothing selected")
         mainMenu()
     end
+end
+
+local active = false
+local savedAddr = nil
+local savedValue = nil
+
+function SpeedHack()
+    gg.clearResults()
+    gg.setRanges(gg.REGION_CODE_APP)
+
+    if not active then
+        gg.searchNumber("9187343240761165228", gg.TYPE_QWORD, false, gg.SIGN_EQUAL, 0, -1)
+        local results = gg.getResults(1)
+
+        if #results == 0 then
+            gg.alert("❌ No value found.")
+            return
+        end
+
+        savedAddr = results[1].address
+
+        savedValue = gg.getValues({{address = savedAddr, flags = gg.TYPE_QWORD}})[1].value
+
+        local t = {}
+        t[1] = {address = savedAddr, flags = gg.TYPE_FLOAT, value = 3}
+        gg.setValues(t)
+
+        active = true
+        gg.toast("✅ Activated.")
+
+    else
+        if savedAddr ~= nil and savedValue ~= nil then
+            local restore = {}
+            restore[1] = {address = savedAddr, flags = gg.TYPE_QWORD, value = savedValue}
+            gg.setValues(restore)
+            gg.toast("❌ Disabled")
+        end
+        active = false
+    end
+end
+
+function Sprint()
+    gg.clearResults()
+    gg.setRanges(gg.REGION_OTHER)
+
+    gg.searchNumber("281474993487972", gg.TYPE_QWORD, false, gg.SIGN_EQUAL, 0, -1)
+    local r = gg.getResults(30)
+    local t = {}
+
+    if #r == 0 then
+        gg.alert("❌ No value found.")
+    else
+        for i, v in ipairs(r) do
+            t[i] = {
+                address = v.address - 0x160,
+                flags = gg.TYPE_FLOAT,
+                value = 450,
+                freeze = true
+            }
+        end
+        gg.setValues(t)
+        gg.addListItems(t)
+        gg.toast("✅ Activated")
+    end
+end
+
+function speedcars()
+    gg.clearResults()
+
+    gg.setRanges(gg.REGION_C_ALLOC)
+    gg.searchNumber("4812096201845506048", gg.TYPE_QWORD, false, gg.SIGN_EQUAL, 0, -1)
+
+    local r = gg.getResults(100)
+    if #r == 0 then
+        gg.alert("❌ No value found")
+        return
+    end
+
+    local t = {}
+    for i, v in ipairs(r) do
+        t[#t + 1] = {
+            address = v.address + 0x64,
+            flags = gg.TYPE_FLOAT,
+            value = -0.00179999997,
+            freeze = true
+        }
+    end
+
+    gg.setValues(t)
+    gg.addListItems(t)
+    gg.toast("✅ Activated!")
+end
+
+function flip()
+    gg.clearResults()
+    gg.setRanges(gg.REGION_C_ALLOC)
+    gg.searchNumber("4812096201845506048", gg.TYPE_QWORD, false, gg.SIGN_EQUAL, 0, -1)
+    local results = gg.getResults(100)
+
+    if #results == 0 then
+        gg.alert("❌ No value found")
+        return
+    end
+
+    local edits = {}
+    for i, v in ipairs(results) do
+        for j = 0, 2 do
+            table.insert(edits, {
+                address = v.address + 0x20 + j * 0x4,
+                flags = gg.TYPE_FLOAT,
+                value = -0.1
+            })
+        end
+    end
+
+    gg.setValues(edits)
+    gg.toast("✅ Activated")
 end
 
 local modifiedValues = {}
@@ -178,7 +307,7 @@ function searchAndReplaceFloat(target, newValue)
     end
 
     gg.setValues(results)
-    gg.toast("✅ Successfully")
+    gg.toast("Successfully")
     gg.clearResults()
 end
 
@@ -193,67 +322,18 @@ function restoreOriginalValues()
     end
 
     gg.setValues(restoreList)
-    gg.toast("✅ Successfully")
+    gg.toast("Successfully")
     modifiedValues = {}
-end
-
-
-function Gm_armor()
-    gg.clearResults()
-    gg.setRanges(gg.REGION_C_ALLOC)
-    gg.searchNumber("99999.99", gg.TYPE_FLOAT)
-    local results = gg.getResults(1)
-
-    if #results == 0 then
-        gg.alert("❌ No value found.")
-        return
-    end
-    local targetAddr = results[1].address - (9.5 * 8)
-    local edit = {
-        address = targetAddr,
-        flags = gg.TYPE_FLOAT,
-        value = 3276887
-    }
-
-    gg.setValues({edit})
-    edit.freeze = true
-    gg.addListItems({edit})
-
-    gg.toast("✅ Gamemode is activated.")
-end
-
-function Gm_pers()
-    gg.clearResults()
-    gg.setRanges(gg.REGION_C_ALLOC)
-    gg.searchNumber("99999.99", gg.TYPE_FLOAT)
-    local results = gg.getResults(1)
-
-    if #results == 0 then
-        gg.alert("❌ No value found.")
-        return
-    end
-    local targetAddr = results[1].address - (10.5 * 8)
-    local edit = {
-        address = targetAddr,
-        flags = gg.TYPE_FLOAT,
-        value = 3276887
-    }
-
-    gg.setValues({edit})
-    edit.freeze = true
-    gg.addListItems({edit})
-
-    gg.toast("✅ Gamemode is activated.")
 end
 
 function Smeh()
     local choice = gg.choice({
         "⬅️ Shift to the left",
-        "➡️ Shift to the right",
+        "➡️ Offset to the right",
         "🧮 His displacement",
-        "↩️ Kickback",
+        "↩️ Rollback",
         "🔙 Back"
-    }, nil, "Меню смещений")
+    }, nil, "Offset Menu")
 
     if choice == 1 then
         searchAndReplaceFloat("0.20000000298", -1)
@@ -266,54 +346,15 @@ function Smeh()
             if num then
                 searchAndReplaceFloat("0.20000000298", num)
             else
-                gg.toast(" ❌ Not a number entered")
+                gg.toast("❌ Not a number entered")
             end
         else
-            gg.toast(" ❌ Input canceled")
+            gg.toast("❌ Entry Canceled")
         end
     elseif choice == 4 then
         restoreOriginalValues()
         gg.clearResults()
     end
-end
-
-function Gm_weapons()
-    gg.setVisible(false)
-    local choice = gg.choice({
-        "🔫 AK-47",
-        "💥 Desert Eagle",
-        "🔧 M4",
-        "⚙️ MP5",
-        "🧨 Shotgun",
-        "🔙 Back"
-    }, nil, " ⚙️ Choose a weapon:")
-
-    if choice == 1 then
-        Gm_weapon("AK-47", 27, 27.5)
-    elseif choice == 2 then
-        Gm_weapon("Desert Eagle", 15, 15.5)
-    elseif choice == 3 then
-        Gm_weapon("M4", 27, 27.5)
-    elseif choice == 4 then
-        Gm_weapon("MP5", 23, 23.5)
-    elseif choice == 5 then
-        Gm_weapon("Shotgun", 19, 19.5)
-    end
-end
-
-function Gm_weapon(name, offset_main, offset_ref)
-    gg.clearResults()
-    gg.setRanges(gg.REGION_C_ALLOC)
-    gg.searchNumber("99999.99", gg.TYPE_FLOAT, false, gg.SIGN_EQUAL, 0, -1)
-    local results = gg.getResults(1)
-    local baseAddr = results[1].address
-    local targetAddr = baseAddr + (offset_main * 8)
-    local refAddr = baseAddr + (offset_ref * 8)
-    local refValue = gg.getValues({{address = refAddr, flags = gg.TYPE_DWORD}})[1].value
-    gg.setValues({{address = targetAddr, flags = gg.TYPE_DWORD, value = refValue}})
-    gg.addListItems({{address = targetAddr, flags = gg.TYPE_DWORD, freeze = true}})
-
-    gg.toast("✅ Активировано")
 end
 
 function toggleRecoil()
@@ -334,7 +375,7 @@ function gunn()
     revert = gg.getResults(400)
     gg.editAll("95", gg.TYPE_FLOAT)
     gg.clearResults()
-    gg.toast(" 🌀 Anti-Scatter Activated 🌀 ")
+    gg.toast("🌀 Anti-Scatter Activated 🌀")
 end 
 
 function gunn2() 
@@ -343,9 +384,9 @@ function gunn2()
     gg.searchNumber("95;900", gg.TYPE_FLOAT)
     gg.refineNumber("95", gg.TYPE_FLOAT)
     revert = gg.getResults(555)
-    gg.editAll("100", gg. TYPE_FLOAT)
+    gg.editAll("100", gg.TYPE_FLOAT)
     gg.clearResults()
-    gg.toast(" 🌀 Anti-Scatter Deactivated 🌀 ")
+    gg.toast("🌀 Anti-Spread Deactivated 🌀")
 end
 
 function Gun1()
@@ -831,7 +872,7 @@ function TeleportPoMet()
         gg.toast("Coordinates successfully replaced!")
         mainMenu()
     else
-        gg.toast(" ❌ No value found")
+        gg.toast("No value found")
         mainMenu()
     end
 
@@ -839,7 +880,7 @@ function TeleportPoMet()
 end
 
 function searchAndReplaceCoords()
-    gg.toast("Wait 5 seconds... Put a mark and don't touch the map")
+    gg.toast("Waiting for 5 seconds... Put a mark and do not touch the map")
     gg.sleep(5000)
     gg.clearResults()
 
@@ -862,7 +903,7 @@ function searchAndReplaceCoords()
     end
 
     if #filtered == 0 then
-        gg.toast(" ❌ No coordinates found")
+        gg.toast("No coordinates found")
         teleport()
         return
     end
@@ -886,7 +927,7 @@ function searchAndReplaceCoords()
     local results = gg.getResults(1)
 
     if #results == 0 then
-        gg.toast(" ❌ Label Not Found")
+        gg.toast("Tag not found")
         mainMenu()
         return
     end
@@ -909,7 +950,7 @@ function searchAndReplaceCoords()
 
     gg.setValues(targetOffsets)
     gg.clearResults()
-    gg.toast("Coordinates successfully migrated!")
+    gg.toast("Coordinates have been successfully transferred!")
     mainMenu()
 end
 
@@ -946,9 +987,9 @@ function replaceAscii(results, newAscii)
 end
 
 function changeTwinNick()
-    local oldNick = gg.prompt({"Enter current nickname:"}, nil, {"text"})
+    local oldNick = gg.prompt({"Enter your current nickname:"}, nil, {"text"})
     if not oldNick or not oldNick[1] then
-        gg.toast(" ❌ Nickname not entered")
+        gg.toast("❌ Nickname not entered")
         return
     end
 
@@ -956,44 +997,44 @@ function changeTwinNick()
     local results = searchAsciiSequence(oldAscii)
 
     if #results == 0 then
-        gg.toast(" ❌ Nickname not found")
+        gg.toast("❌ Nickname not found")
         return
     end
 
-local newNick = gg.prompt({"Enter a new nickname (same length):"}, nil, {"text"})
+    local newNick = gg.prompt({"Enter a new nickname (same length):"}, nil, {"text"})
     if not newNick or not newNick[1] then
-        gg.toast(" ❌ No new nickname has been entered")
+        gg.toast("❌ A new nickname has not been introduced")
         return
     end
 
     if #newNick[1] ~= #oldNick[1] then
-        gg.toast("❌ The new nickname should be the same length!")
+        gg.toast("❌ The new nickname must be the same length!")
         return
     end
 
-local newAscii = stringToAscii(newNick[1])
+    local newAscii = stringToAscii(newNick[1])
     replaceAscii(results, newAscii)
 
-gg.toast(" ✅ Nickname changed to: " .. newNick[1])
+    gg.toast("✅ Nickname changed to: " .. newNick[1])
 end
 
 --------------------------------------------------------------
 
 function changeChatNickSafe()
-    local oldNick = gg.prompt({"Enter your current nickname (as in chat):"}, nil, {"text"})
+    local oldNick = gg.prompt({"Enter your current nickname (as in the chat):"}, nil, {"text"})
     if not oldNick or not oldNick[1] then
-        gg.toast(" ❌ Nickname not entered")
+        gg.toast("❌ Nickname not entered")
         return
     end
     
     local newNick = gg.prompt({"Enter a new nickname:"}, nil, {"text"})
     if not newNick or not newNick[1] then
-        gg.toast(" ❌ No new nickname has been entered")
+        gg.toast("❌ A new nickname has not been introduced")
         return
     end
 
     if #oldNick[1] ~= #newNick[1] then
-        gg.toast(" ❌ The nickname length must match")
+        gg.toast("❌ The length of the nickname must match")
         return
     end
 
@@ -1009,7 +1050,7 @@ function changeChatNickSafe()
     local results = gg.getResults(500)
 
     if #results == 0 then
-        gg.toast(" ❌ Nickname not found")
+        gg.toast("❌ Nickname not found")
         return
     end
 
@@ -1048,24 +1089,24 @@ function changeChatNickSafe()
     end
 
     if #setList / #newNick[1] > 50 then
-        gg.toast(" ⚠️ Too many matches found, only the first 50 were replaced")
+        gg.toast("⚠️ Too many matches found, only the first 50 were replaced")
         setList = {table.unpack(setList, 1, 50 * #newNick[1])}
     end
 
     if #setList > 0 then
         gg.setValues(setList)
-        gg.toast(" ✅ Nickname Changed")
+        gg.toast("✅ Nickname changed")
     else
-        gg.toast(" i️ All found values have already been changed or do not match")
+        gg.toast("ℹ️ All found values have already been changed or do not match")
     end
 end
 
 function changeNik()
     gg.setVisible(false)
     local choice = gg.choice({
-        "✏ Change the nickname of another person",
+        "✏ Change another person's nickname",
         "📜 Change nickname from chat",
-        "❌ Exit"
+        "🔙 Back"
     }, nil, "Choose an action:")
 
     if choice == 1 then
@@ -1073,7 +1114,7 @@ function changeNik()
     elseif choice == 2 then
         changeChatNickSafe()
     elseif choice == 3 then
-        os.exit()
+        mainMemu()
     end
 end
 
@@ -1169,11 +1210,11 @@ function HitboxMenu()
     gg.clearResults()
     local targetValue = 1042536202
     local region = gg.REGION_C_ALLOC
-    local step = 27.5 * 8
+    local step = 0 * 8
 
     gg.setRanges(region)
     gg.searchNumber(targetValue, gg.TYPE_DWORD)
-    local results = gg.getResults(50)
+    local results = gg.getResults(500)
 
     if #results == 0 then
         gg.toast("No values found")
@@ -1190,9 +1231,10 @@ function HitboxMenu()
         gg.setValues(edits)
     end
 
-    gg.sleep(60000)
+    gg.sleep(10000)
     HitboxMenu()
 end
+
 
 local baxActive = false
 
@@ -1261,7 +1303,7 @@ local function findCoords()
     local qres = gg.getResults(1000000)
 
     if #qres == 0 then
-        gg.alert(" ❌ Not Found")
+        gg.alert("❌ Not found")
         return nil
     end
 
@@ -1283,7 +1325,7 @@ local function findCoords()
 
     candidates = dedupByAddress(candidates)
     if #candidates == 0 then
-        gg.alert(" ❌ Not Found")
+        gg.alert("❌ Not found")
         return nil
     end
 
@@ -1292,8 +1334,8 @@ end
 
 local function twoChecks(candidates)
     local before1 = gg.getValues(copyTable(candidates))
-    toastCountDown(5, "Go Up or Down")
-    local dir1 = gg.choice({"Drove up", "Drove down"}, nil, "Where were you going?")
+    toastCountDown(5, "Drive up or down")
+    local dir1 = gg.choice({"Drove up", "Drove down"}, nil, "Where were they moving?")
     if not dir1 then return nil end
     local wantUp1 = (dir1 == 1)
     local after1 = gg.getValues(copyTable(candidates))
@@ -1301,8 +1343,8 @@ local function twoChecks(candidates)
     if #filtered1 == 0 then return nil end
 
     local before2 = gg.getValues(copyTable(filtered1))
-    toastCountDown(5, "Repeat movement")
-    local dir2 = gg.choice({"Drove up", "Drove down"}, nil, "Where were you going (again)?")
+    toastCountDown(5, "Repeat the movement")
+    local dir2 = gg.choice({"Drove up", "Drove down"}, nil, "Where were they moving (again) ?")
     if not dir2 then return nil end
     local wantUp2 = (dir2 == 1)
     local after2 = gg.getValues(copyTable(filtered1))
@@ -1323,15 +1365,15 @@ local function processValues(list)
         for i, item in ipairs(batch) do
             item.value = item.value + 10
             gg.setValues({item})
-            gg.toast("Variant: #" .. i .. " from " .. #batch)
+            gg.toast("Option: #" .. i .. " из " .. #batch)
             gg.sleep(2000)
         end
 
         local menu = {}
         for i = 1, #batch do
-            menu[#menu + 1] = "Choose option #" .. i
+            menu[#menu + 1] = "Select an option #" .. i
         end
-        menu[#menu + 1] = "Next"
+        menu[#menu + 1] = "Following"
 
         local choice = gg.choice(menu, nil, "Select an option or 'Next'")
         if not choice then return end
@@ -1343,7 +1385,7 @@ local function processValues(list)
             toSave[2] = {address = sel.address - 0x4, flags = gg.TYPE_FLOAT}
             toSave[3] = {address = sel.address - 0x8, flags = gg.TYPE_FLOAT}
             toSave = gg.getValues(toSave)
-            -- даём явные имена, чтобы потом могли однозначно найти записи
+            
             if toSave[1] then toSave[1].name = "Saved_Coord_X" end
             if toSave[2] then toSave[2].name = "Saved_Coord_Y" end
             if toSave[3] then toSave[3].name = "Saved_Coord_Z" end
@@ -1353,7 +1395,7 @@ local function processValues(list)
             index = index + 10
         end
     end
-    gg.alert("Coordinates have ❌ run out")
+    gg.alert("Coordinates ended ❌")
 end
 
 local function teleportToCheckpointCar()
@@ -1365,7 +1407,7 @@ local function teleportToCheckpointCar()
         if v.name == "Saved_Coord_Z" then savedZ = v end
     end
     if not (savedX and savedY and savedZ) then
-        gg.alert(" ❌ Save the coordinates first.")
+        gg.alert("❌ Save the coordinates first.")
         return
     end
 
@@ -1373,7 +1415,7 @@ local function teleportToCheckpointCar()
     savedY.value = 30
     savedZ.value = -1370
     gg.setValues({savedX, savedY, savedZ})
-    gg.toast(" ➡ Teleport to (0, 30, -1370)")
+    gg.toast("➡ Teleport to the point (0, 30, -1370)")
     gg.sleep(5000)
 
     gg.clearResults()
@@ -1390,7 +1432,7 @@ local function teleportToCheckpointCar()
     end
 
     if #filtered == 0 then
-        gg.alert(" ❌ Checkpoint Not Found")
+        gg.alert("❌ Checkpoint not found")
         return
     end
 
@@ -1416,12 +1458,12 @@ local function teleportToCheckpointCar()
     savedY.value = coords[2].value
     savedZ.value = coords[3].value
     gg.setValues({savedX, savedY, savedZ})
-    gg.toast("✅ The teleport to the checkpoint is completed!")
+    gg.toast("✅ Teleport to the checkpoint completed!")
     gg.clearResults()
 end
 
 function teleportToMarkerCar()
-    gg.toast("Wait 5 seconds... Put a mark and don't touch the map")
+    gg.toast("Waiting for 5 seconds... Put a mark and don't touch the map")
     gg.sleep(5000)
     gg.clearResults()
 
@@ -1445,7 +1487,7 @@ function teleportToMarkerCar()
     end
 
     if #filtered == 0 then
-        gg.toast(" ❌ Label Not Found")
+        gg.toast("❌ Tag not found")
         return
     end
 
@@ -1469,7 +1511,7 @@ function teleportToMarkerCar()
     end
 
     if not (savedX and savedY and savedZ) then
-        gg.alert ("❌ Save the coordinates first")
+        gg.alert("❌ Save the coordinates first")
         return
     end
 
@@ -1478,7 +1520,7 @@ function teleportToMarkerCar()
     savedY.value = 30
     savedZ.value = -1370
     gg.setValues({savedX, savedY, savedZ})
-    gg.toast(" ➡ Teleport to Point (0,30,-1370)")
+    gg.toast("➡ Teleport to the point (0,30,-1370)")
     gg.sleep(1000)
 
     -- 2. телепорт по координатам метки
@@ -1486,11 +1528,11 @@ function teleportToMarkerCar()
     savedZ.value = savedCoords[2].value
     savedY.value = 55
     gg.setValues({savedX, savedY, savedZ})
-    gg.toast("✅ Teleport to the mark is completed!")
+    gg.toast("✅ Teleport to the marker completed!")
 end
 
   function botTaxi()
-    gg.toast(" 🚖 Taxi bot is running!")
+    gg.toast("🚖 Taxi Bot Launched!")
     while true do
         -- 1 телепорт
         teleportToCheckpointCar()
@@ -1516,7 +1558,7 @@ end
         -- 🔴 Выход из цикла при открытии GG
         if gg.isVisible(true) then
             gg.setVisible(false)
-            gg.toast(" ⛔ Bot taxi stopped")
+            gg.toast("⛔ Taxi bot stopped")
             break
         end
     end
@@ -1542,7 +1584,7 @@ function cycleCheckpoints()
         if v.name == "Saved_Coord_Z" then savedZ = v end
     end
     if not (savedX and savedY and savedZ) then
-        gg.alert(" ❌ Save the coordinates first.")
+        gg.alert("❌ Save the coordinates first.")
         return
     end
 
@@ -1568,7 +1610,7 @@ function cycleCheckpoints()
             end
 
             if #filtered == 0 then
-                gg.alert(" ❌ Checkpoint Not Found")
+                gg.alert("❌ Checkpoint not found")
                 return
             end
 
@@ -1601,7 +1643,7 @@ function cycleCheckpoints()
         savedY.value = 30
         savedZ.value = -1370
         gg.setValues({savedX, savedY, savedZ})
-        gg.toast(" ➡ Teleport to (0, 30, -1370)")
+        gg.toast("➡ Teleport to the point (0, 30, -1370)")
         gg.sleep(1500)
 
         -- ⬇ теперь телепорт на чекпоинт
@@ -1610,11 +1652,11 @@ function cycleCheckpoints()
         savedZ.value = values[3].value
         gg.setValues({savedX, savedY, savedZ})
 
-        gg.toast(" 🔄 Move to the checkpoint: X:".. values[1].value.." Y:".. values[2].value.." Z:".. values[3].value)
+        gg.toast("🔄 Moving to Checkpoint: X:"..values[1].value.." Y:"..values[2].value.." Z:"..values[3].value)
 
         -- если координаты не менялись → выходим
         if unchangedCount >= 3 then
-            gg.toast(" ✅ Coordinates have stopped updating, script is complete")
+            gg.toast("✅ The coordinates have stopped being updated, the script has been completed")
             break
         end
 
@@ -1626,7 +1668,7 @@ function cycleCheckpoints()
 end
 
 function botAir()
-    toggleFreezeAirHP() 
+    toggleFreezeCarHP() 
     gg.sleep(1500)
     local cands = findCoords()
         if cands then
@@ -1646,7 +1688,7 @@ function botAir()
         if v.name == "Saved_Coord_Z" then savedZ = v end
     end
     if not (savedX and savedY and savedZ) then
-        gg.alert(" ❌ Save the coordinates first.")
+        gg.alert("❌ Save the coordinates first.")
         return
     end
 
@@ -1672,7 +1714,7 @@ function botAir()
             end
 
             if #filtered == 0 then
-                gg.alert(" ❌ Checkpoint Not Found")
+                gg.alert("❌ Checkpoint not found")
                 return
             end
 
@@ -1706,11 +1748,11 @@ function botAir()
         savedZ.value = values[3].value
         gg.setValues({savedX, savedY, savedZ})
 
-        gg.toast(" 🔄 Move to the checkpoint: X:".. values[1].value.." Y:".. values[2].value.." Z:".. values[3].value)
+        gg.toast("🔄 Moving to Checkpoint: X:"..values[1].value.." Y:"..values[2].value.." Z:"..values[3].value)
 
         -- если координаты не менялись → выходим
         if unchangedCount >= 3 then
-            gg.toast(" ✅ Coordinates have stopped updating, script is complete")
+            gg.toast("✅ Checkpoints are over")
             break
         end
 
@@ -1731,7 +1773,7 @@ local function getFirst3Coords()
         findAndSaveCoords()
         list = gg.getListItems()
         if #list < 3 then
-            gg.toast(" ❌ Error: coordinates not found!")
+            gg.toast("Error: coordinates not found!")
             return nil
         end
     end
@@ -1749,7 +1791,7 @@ local function teleport(tx, ty, tz)
 
     -- Проверяем адреса
     if not (saved[1].address and saved[2].address and saved[3].address) then
-        gg.toast(" ❌ Error: nil coordinates addresses")
+        gg.toast("Error: nil coordinates addresses")
         return
     end
 
@@ -1759,302 +1801,9 @@ local function teleport(tx, ty, tz)
         {address = saved[3].address, flags = FLOAT, value = tz}
     })
 end
-
-local pumps = {
-    {x = -2094, y = 1550, z = 45},--1
-    {x = -1822, y = -187, z = 37},--2  
-    {x = -146, y = -2024, z = 32},--3
-    {x = -2728, y = 2794, z = 2},--4
-    {x = -2747, y = 2813, z = 2},--5
-    {x = -2805, y = 2813, z = 2},--6
-    {x = -2798, y = 2777, z = 2},--7
-    {x = -2750, y = 2768, z = 2},--8
-    {x = -2798, y = 2753, z = 2},--9
-    {x = -2791, y = 2726, z = 2},--10
-    {x = -2748, y = 2730, z = 2},--11
-    {x = -2667, y = 2883, z = 2},--12
-    {x = -2481, y = 2846, z = 5},--13
-    {x = -1392, y = 2517, z = 44},--14
-    {x = -1607, y = 1457, z = 50},--15
-    {x = -2094, y = 1128, z = 5},--16
-    {x = -2709, y = 2134, z = 27},--17
-    {x = -2214, y = -39, z = 13},--18
-    {x = -2217, y = 186, z = 11},--19
-    {x = -2034, y = -28, z = 12},--20
-    {x = -1996, y = -179, z = 11},--21
-    {x = 2351, y = 1989, z = 17},--22
-    {x = 1371, y = 963, z = 14},--23
-    {x = 1642, y = 1010, z = 14},--24
-    {x = 1592, y = 1003, z = 14},--25
-    {x = 1858, y = 2038, z = 16},--26
-    {x = 445, y = 1171, z = 13},--27
-    {x = 342, y = -1926, z = 42},--28
-    {x = -1077, y = -1616, z = 49},--29
-    {x = -777, y = 782, z = 15},--30
-    {x = -141, y = 853, z = 13},--31
-    {x = -116, y = 811, z = 13},--32
-    {x = 148, y = 763, z = 13},--33
-    {x = 355, y = 1360, z = 12},--34
-    {x = -2239, y = 1965, z = 51},--35
-    {x = -1966, y = -291, z = 22},--36
-    {x = -2172, y = 311, z = 12},--37
-    {x = -2229, y = 296, z = 12},--38
-    {x = -2142, y = 250, z = 12},--39
-    {x = -2065, y = 264, z = 11},--40
-    {x = -2073, y = 175, z = 11},--41
-    {x = -2167, y = 202, z = 13},--42
-    {x = -2183, y = 247, z = 12},--43
-    {x = -2709, y = 2134, z = 27},--44
-    {x = -2517, y = 181, z = 12},--45
-    {x = -2217, y = 186, z = 11},--46
-    {x = -2571, y = 109, z = 12},--47
-    {x = -2408, y = 397, z = 11},--48
-    {x = 2516, y = -188, z = 4},--49
-    {x = 2043, y = 1396, z = 27},--50
-    {x = 2554, y = -2188, z = 23},--51
-    {x = 2325, y = -1814, z = 23},--52
-    {x = 533, y = 329, z = 13},--53
-    {x = 1133, y = 423, z = 13},--54
-    {x = 412, y = 579, z = 13},--55
-    {x = 181, y = 446, z = 12},--56
-    {x = -285, y = 100, z = 14},--57
-    {x = -458, y = 899, z = 12},--58
-    {x = -44, y = 909, z = 13},--59
-    {x = 1896, y = 1909, z = 14},--60
-    {x = 1796, y = 2514, z = 16},--61
-    {x = -218, y = 1024, z = 13},--62
-    {x = -1885, y = 201, z = 12},--63
-    {x = 1874, y = 1224, z = 34},--64
-    {x = 158, y = 2022, z = 9},--65
-    {x = -8, y = 1360, z = 13}--66
-}
-
--- Основной бот
-function bot_pumps()
-    teleport(pumps[1].x, pumps[1].y, pumps[1].z)--2
-    gg.sleep(3000)
-    teleport(pumps[2].x, pumps[2].y, pumps[2].z)--2
-    gg.sleep(3000)
-    teleport(pumps[3].x, pumps[3].y, pumps[3].z)--3
-    gg.sleep(3000)
-    teleport(pumps[4].x, pumps[4].y, pumps[4].z)--4
-    gg.sleep(3000)
-    teleport(pumps[5].x, pumps[5].y, pumps[5].z)--5
-    gg.sleep(3000)
-    teleport(pumps[6].x, pumps[6].y, pumps[6].z)--6
-    gg.sleep(3000)
-    teleport(pumps[7].x, pumps[7].y, pumps[7].z)--7
-    gg.sleep(3000)
-    teleport(pumps[8].x, pumps[8].y, pumps[8].z)--8
-    gg.sleep(3000)
-    teleport(pumps[9].x, pumps[9].y, pumps[9].z)--9
-    gg.sleep(3000)
-    teleport(pumps[10].x, pumps[10].y, pumps[10].z)--10
-    gg.sleep(3000)
-    teleport(pumps[11].x, pumps[11].y, pumps[11].z)--11
-    gg.sleep(3000)
-    teleport(pumps[12].x, pumps[12].y, pumps[12].z)--12
-    gg.sleep(3000)
-    teleport(pumps[13].x, pumps[13].y, pumps[13].z)--13
-    gg.sleep(3000)
-    teleport(pumps[14].x, pumps[14].y, pumps[14].z)--14
-    gg.sleep(3000)
-    teleport(pumps[15].x, pumps[15].y, pumps[15].z)--15
-    gg.sleep(3000)
-    teleport(pumps[16].x, pumps[16].y, pumps[16].z)--16
-    gg.sleep(3000)
-    teleport(pumps[17].x, pumps[17].y, pumps[17].z)--17
-    gg.sleep(3000)
-    teleport(pumps[18].x, pumps[18].y, pumps[18].z)--18
-    gg.sleep(3000)
-    teleport(pumps[19].x, pumps[19].y, pumps[19].z)--19
-    gg.sleep(3000)
-    teleport(pumps[20].x, pumps[20].y, pumps[20].z)--20
-    gg.sleep(3000)
-    teleport(pumps[21].x, pumps[21].y, pumps[21].z)--21
-    gg.sleep(3000)
-    teleport(pumps[22].x, pumps[22].y, pumps[22].z)--22
-    gg.sleep(3000)
-    teleport(pumps[23].x, pumps[23].y, pumps[23].z)--23
-    gg.sleep(3000)
-    teleport(pumps[24].x, pumps[24].y, pumps[24].z)--24
-    gg.sleep(3000)
-    teleport(pumps[25].x, pumps[25].y, pumps[25].z)--25
-    gg.sleep(3000)
-    teleport(pumps[26].x, pumps[26].y, pumps[26].z)--26
-    gg.sleep(3000)
-    teleport(pumps[27].x, pumps[27].y, pumps[27].z)--27
-    gg.sleep(3000)
-    teleport(pumps[28].x, pumps[28].y, pumps[28].z)--28
-    gg.sleep(3000)
-    teleport(pumps[29].x, pumps[29].y, pumps[29].z)--29
-    gg.sleep(3000)
-    teleport(pumps[30].x, pumps[30].y, pumps[30].z)--30
-    gg.sleep(3000)
-    teleport(pumps[31].x, pumps[31].y, pumps[31].z)--31
-    gg.sleep(3000)
-    teleport(pumps[32].x, pumps[32].y, pumps[32].z)--32
-    gg.sleep(3000)
-    teleport(pumps[33].x, pumps[33].y, pumps[33].z)--33
-    gg.sleep(3000)
-    teleport(pumps[34].x, pumps[34].y, pumps[34].z)--34
-    gg.sleep(3000)
-    teleport(pumps[35].x, pumps[35].y, pumps[35].z)--35
-    gg.sleep(3000)
-    teleport(pumps[36].x, pumps[36].y, pumps[36].z)--36
-    gg.sleep(3000)
-    teleport(pumps[37].x, pumps[37].y, pumps[37].z)--37
-    gg.sleep(3000)
-    teleport(pumps[38].x, pumps[38].y, pumps[38].z)--38
-    gg.sleep(3000)
-    teleport(pumps[39].x, pumps[39].y, pumps[39].z)--39
-    gg.sleep(3000)
-    teleport(pumps[40].x, pumps[40].y, pumps[40].z)--40
-    gg.sleep(3000)
-    teleport(pumps[41].x, pumps[41].y, pumps[41].z)--41
-    gg.sleep(3000)
-    teleport(pumps[42].x, pumps[42].y, pumps[42].z)--42
-    gg.sleep(3000)
-    teleport(pumps[43].x, pumps[43].y, pumps[43].z)--43
-    gg.sleep(3000)
-    teleport(pumps[44].x, pumps[44].y, pumps[44].z)--44
-    gg.sleep(3000)
-    teleport(pumps[45].x, pumps[45].y, pumps[45].z)--45
-    gg.sleep(3000)
-    teleport(pumps[46].x, pumps[46].y, pumps[46].z)--46
-    gg.sleep(3000)
-    teleport(pumps[47].x, pumps[47].y, pumps[47].z)--47
-    gg.sleep(3000)
-    teleport(pumps[48].x, pumps[48].y, pumps[48].z)--48
-    gg.sleep(3000)
-    teleport(pumps[49].x, pumps[49].y, pumps[49].z)--49
-    gg.sleep(3000)
-    teleport(pumps[50].x, pumps[50].y, pumps[50].z)--50
-    gg.sleep(3000)
-    teleport(pumps[51].x, pumps[51].y, pumps[51].z)--51
-    gg.sleep(3000)
-    teleport(pumps[52].x, pumps[52].y, pumps[52].z)--52
-    gg.sleep(3000)
-    teleport(pumps[53].x, pumps[53].y, pumps[53].z)--53
-    gg.sleep(3000)
-    teleport(pumps[54].x, pumps[54].y, pumps[54].z)--54
-    gg.sleep(3000)
-    teleport(pumps[55].x, pumps[55].y, pumps[55].z)--55
-    gg.sleep(3000)
-    teleport(pumps[56].x, pumps[56].y, pumps[56].z)--56
-    gg.sleep(3000)
-    teleport(pumps[57].x, pumps[57].y, pumps[57].z)--57
-    gg.sleep(3000)
-    teleport(pumps[58].x, pumps[58].y, pumps[58].z)--58
-    gg.sleep(3000)
-    teleport(pumps[59].x, pumps[59].y, pumps[59].z)--59
-    gg.sleep(3000)
-    teleport(pumps[60].x, pumps[60].y, pumps[60].z)--60
-    gg.sleep(3000)
-    teleport(pumps[61].x, pumps[61].y, pumps[61].z)--61
-    gg.sleep(3000)
-    teleport(pumps[62].x, pumps[62].y, pumps[62].z)--62
-    gg.sleep(3000)
-    teleport(pumps[63].x, pumps[63].y, pumps[63].z)--63
-    gg.sleep(3000)
-    teleport(pumps[64].x, pumps[64].y, pumps[64].z)--64
-    gg.sleep(3000)
-    teleport(pumps[65].x, pumps[65].y, pumps[65].z)--65
-    gg.sleep(3000)
-    teleport(pumps[66].x, pumps[66].y, pumps[66].z)--66
-    gg.sleep(3000)
-    gg.toast("Everything Found")
-end
-
-local candy = {
-    {x = 1597, y = 984, z = 14}, --1
-    {x = 1621, y = 991, z = 14},--2  
-    {x = 1615, y = 1013, z = 14},--3
-    {x = 1605, y = 1061, z = 14},--4
-    {x = 1620, y = 1044, z = 14},--5
-    {x = 1599, y = 1075, z = 14},--6
-    {x = 1560, y = 1062, z = 14},--7
-    {x = 1595, y = 1065, z = 18},--8
-    {x = 1636, y = 1069, z = 18},--9
-    {x = 1648, y = 1073, z = 20},--10
-    {x = 1655, y = 1070, z = 14},--11
-    {x = 1642, y = 1036, z = 14},--12
-    {x = 1676, y = 1057, z = 17},--13
-    {x = 1693, y = 996, z = 14},--14
-    {x = 1711, y = 977, z = 14},--15
-    {x = 1671, y = 962, z = 14},--16
-    {x = 1688, y = 973, z = 16},--17
-    {x = 1643, y = 1002, z = 19},--18
-    {x = 1669, y = 1016, z = 13},--19
-    {x = 1645, y = 989, z = 14},--20
-    {x = 1620, y = 961, z = 14},--21
-    {x = 1636, y = 1013, z = 14},--22
-    {x = 1685, y = 1026, z = 14},--23
-    {x = 1643, y = 1088, z = 14},--24
-    {x = 1669, y = 1085, z = 14},--25
-    {x = 1593, y = 1043, z = 14}--26   
-}
-
--- Основной бот
-function bot_candy()
-    teleport(candy[1].x, candy[1].y, candy[1].z)--1
-    gg.sleep(2000)
-    teleport(candy[2].x, candy[2].y, candy[2].z)--2
-    gg.sleep(2000)
-    teleport(candy[3].x, candy[3].y, candy[3].z)--3
-    gg.sleep(2000)
-    teleport(candy[4].x, candy[4].y, candy[4].z)--4
-    gg.sleep(2000)
-    teleport(candy[5].x, candy[5].y, candy[5].z)--5
-    gg.sleep(2000)
-    teleport(candy[6].x, candy[6].y, candy[6].z)--6
-    gg.sleep(2000)
-    teleport(candy[7].x, candy[7].y, candy[7].z)--7
-    gg.sleep(2000)
-    teleport(candy[8].x, candy[8].y, candy[8].z)--8
-    gg.sleep(2000)
-    teleport(candy[9].x, candy[9].y, candy[9].z)--9
-    gg.sleep(2000)
-    teleport(candy[10].x, candy[10].y, candy[10].z)--10
-    gg.sleep(2000)
-    teleport(candy[11].x, candy[11].y, candy[11].z)--11
-    gg.sleep(2000)
-    teleport(candy[12].x, candy[12].y, candy[12].z)--12
-    gg.sleep(2000)
-    teleport(candy[13].x, candy[13].y, candy[13].z)--13
-    gg.sleep(2000)
-    teleport(candy[14].x, candy[14].y, candy[14].z)--14
-    gg.sleep(2000)
-    teleport(candy[15].x, candy[15].y, candy[15].z)--15
-    gg.sleep(2000)
-    teleport(candy[16].x, candy[16].y, candy[16].z)--16
-    gg.sleep(2000)
-    teleport(candy[17].x, candy[17].y, candy[17].z)--17
-    gg.sleep(2000)
-    teleport(candy[18].x, candy[18].y, candy[18].z)--18
-    gg.sleep(2000)
-    teleport(candy[19].x, candy[19].y, candy[19].z)--19
-    gg.sleep(2000)
-    teleport(candy[20].x, candy[20].y, candy[20].z)--20
-    gg.sleep(2000)
-    teleport(candy[21].x, candy[21].y, candy[21].z)--21
-    gg.sleep(2000)
-    teleport(candy[22].x, candy[22].y, candy[22].z)--22
-    gg.sleep(2000)
-    teleport(candy[23].x, candy[23].y, candy[23].z)--23
-    gg.sleep(2000)
-    teleport(candy[24].x, candy[24].y, candy[24].z)--24
-    gg.sleep(2000)
-    teleport(candy[25].x, candy[25].y, candy[25].z)--25
-    gg.sleep(2000)
-    teleport(candy[26].x, candy[26].y, candy[26].z)--26
-    gg.sleep(2000)
-    bot_candy() 
-end
-
 local sequence = {
     {x = -806.40246582031, y = 782.3818359375, z = 13.10230064392},
-    {x = -806.40246582031, y = 782.3818359375, z = 0.0}, 
+    {x = -806.40246582031, y = 782.3818359375, z = 0.0},
     {x = -806.24920654297, y = 790.70220947266, z = 13.10230064392},
     {x = -806.24920654297, y = 790.70220947266, z = 0.0}
 }
@@ -2065,13 +1814,57 @@ function bot_Neftezavod()
     gg.sleep(500)
     teleport(sequence[2].x, sequence[2].y, sequence[2].z)
     gg.sleep(500)
-    gg.toast("Wait 20 seconds...")
-    gg.sleep(20000)
+    gg.toast("Wait 2.5 seconds...")
+    gg.sleep(2500)
     teleport(sequence[3].x, sequence[3].y, sequence[3].z)
     gg.sleep(500)
     teleport(sequence[4].x, sequence[4].y, sequence[4].z)
     gg.sleep(500)
     bot_Neftezavod()
+end
+
+function saveCurrentPoint()
+    local values = gg.getListItems()
+    if #values < 3 then
+        gg.toast("First, find the coordinates")
+        return teleport()
+    end
+
+    local input = gg.prompt({"Point Name:"}, nil, {"text"})
+    if input and input[1] ~= "" then
+        savedPoints[input[1]] = {
+            x = values[1].value,
+            y = values[2].value,
+            z = values[3].value
+        }
+        savePointsToFile()
+        gg.toast("The point is saved!")
+    else
+        gg.toast("Unsave")
+    end
+    teleportCar()
+end
+
+function chooseSavedPoint()
+    if next(savedPoints) == nil then
+        gg.toast("No saved points")
+        return mainMenu()
+    end
+
+    local names = {}
+    for name in pairs(savedPoints) do
+        table.insert(names, name)
+    end
+
+    table.sort(names)
+    local choice = gg.choice(names, nil, "Select a point")
+    if choice then
+        local point = savedPoints[names[choice]]
+        applyTeleport(point.x, point.y, point.z)
+    else
+        gg.toast("Selection canceled")
+        teleport()
+    end
 end
 
 function cleanupOnExit()
@@ -2094,10 +1887,10 @@ function teleportToLocation(location)
 
         gg.toast("Teleport to " .. location.name .. " (X: " .. x .. ", Y: " .. y .. ", Z: " .. z .. ")")
         gg.sleep(1000)
-        gg.toast("Teleport completed!")
+        gg.toast("Teleporter completed!")
         mainMenu()
     else
-        gg.toast(" ❌ Error: no saved coordinates")
+        gg.toast("Error: No saved coordinates")
         teleport()
     end
 end
@@ -2115,14 +1908,14 @@ function teleportManualCar()
             savedValues[3].value = input[3]
 
             gg.setValues(savedValues)
-            gg.toast("Teleportation completed!")
+            gg.toast("✅ Teleportation completed!")
             mainMenu()
         else
-gg.toast(" ❌ Teleport cancelled")
+            gg.toast("❌ Teleporter canceled")
             teleport()
         end
     else
-        gg.toast❌ ("Error: Saved coordinates not found!")
+        gg.toast("Error: Saved coordinates not found!")
         teleportCar()
     end
 end
@@ -2131,7 +1924,7 @@ function teleportCar()
     gg.setVisible(false)
     local choice = gg.choice({
         "🔍 Find and save coordinates",
-        "💾 Saved points",
+        "💾 Saved Points",
         "🚀 Teleport by coordinates",
         "✅ Teleport by mark",
         "🧾 Teleport by checkpoint",
@@ -2214,9 +2007,9 @@ function toggleFreezeCarHP()
             gg.addListItems(setList)
             savedItems = setList
             hpFrozen = true
-            gg.toast(" ✅ Godmode activated")
+            gg.toast("✅ Godmode is activated")
         else
-            gg.toast(" ❌ No value found")
+            gg.toast("❌ No value found")
         end
 
         gg.clearResults()
@@ -2229,43 +2022,9 @@ function toggleFreezeCarHP()
         gg.removeListItems(savedItems)
         savedItems = {}
         hpFrozen = false
-        gg.toast(" ❌ Godmode deactivated")
+        gg.toast("❌ Godmode deactivated")
     end
 end
-
-function toggleFreezeAirHP()
-    gg.clearResults()
-    gg.clearList() 
-    if not hpFrozen then
-        gg.setRanges(gg.REGION_C_ALLOC)
-        gg.searchNumber("4934256341737799680", gg.TYPE_QWORD)
-        gg.refineNumber("4934256341737799680")
-        local results = gg.getResults(1000000)
-
-        if #results > 0 then
-            local setList = {}
-            for i, result in ipairs(results) do
-                local hpAddr = result.address + (0.5 * 8)
-                table.insert(setList, {
-                    address = hpAddr,
-                    flags = gg.TYPE_FLOAT,
-                    value = 12000,
-                    freeze = true
-                })
-            end
-
-            gg.setValues(setList)
-            gg.addListItems(setList)
-            savedItems = setList
-            hpFrozen = true
-            gg.toast(" ✅ Godmode activated")
-        else
-            gg.toast(" ❌ No value found")
-        end
-        gg.clearResults()
-    end
-end
-
 
 local teleportCategories = {
     ["1.Jobs"] = {
@@ -2692,7 +2451,6 @@ function saveCurrentPoint()
 end
 
 function chooseSavedPoint()
-    loadSavedPoints()
     if next(savedPoints) == nil then
         gg.toast("❌ No saved points")
         return mainMenu()
@@ -2741,6 +2499,9 @@ function teleportToLocation(location)
         teleport()
     end
 end
+
+loadSavedPoints()
+mainMenu()
 
 while true do
     if gg.isVisible(true) then
