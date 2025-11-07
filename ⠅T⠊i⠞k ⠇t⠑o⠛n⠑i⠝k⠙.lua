@@ -62,6 +62,8 @@ function transportMenu()
         "🚗 Включить Gm Car",
         "💥 Взорвать Машину",
         "🚀 Телепорт с Транспортом",
+        "🤸 Переворот транспорта(New)", 
+        "🏎️ Увеличение скорости(New)",
         "🔙 Назад"
     }, nil, "Транспорт")
 
@@ -71,7 +73,11 @@ function transportMenu()
         toggleBax()
     elseif choice == 3 then
         teleportCar()
-    elseif choice == 4 or choice == nil then
+    elseif choice == 4 then
+        flip()
+    elseif choice == 5 then
+        speedcars()
+    elseif choice == 6 or choice == nil then
         mainMenu()
     end
 end
@@ -81,11 +87,13 @@ function PersMenu()
     local choice = gg.choice({
         "🔬 Увеличение хитбоксов",
         "🏃 Быстрый спринт",
+        "👟 Бесконечный спринт(New)",
         "📷 Фов",
         "🌧️ Дождь",
         "〽️ Изменить ник",
         "♥️ Gamemode",
         "🪖 Броня",
+        "🚄 SpeedHack(New)",
         "🔙 Назад"
     }, nil, "Персонаж")
 
@@ -94,16 +102,20 @@ function PersMenu()
     elseif choice == 2 then
         toggleSprint()
     elseif choice == 3 then
-        toggleFov()
+        Sprint()
     elseif choice == 4 then
-        toggleRain()
+        toggleFov()
     elseif choice == 5 then
-        changeNik()
+        toggleRain()
     elseif choice == 6 then
-        Gm_pers()
+        changeNik()
     elseif choice == 7 then
+        Gm_pers()
+    elseif choice == 8 then
         Gm_armor()
-    elseif choice == 8 or choice == nil then
+    elseif choice == 9 then
+        SpeedHack()
+    elseif choice == 9 or choice == nil then
         mainMenu()
     end
 end
@@ -114,6 +126,7 @@ function Bots()
             "🏎️ Вин гонки", 
             "✈️ Бот авиа",
             "🎃 Бот на тыквы",
+            "🍬 Бот на конфеты",
             "🛢️ Бот нефтезавод", 
             "⬅ Назад"
         }, nil, "Меню: Боты")
@@ -127,8 +140,10 @@ function Bots()
         elseif subMenu == 4 then
             bot_pumps()
         elseif subMenu == 5 then
-            bot_Neftezavod()
+            bot_candy()
         elseif subMenu == 6 then
+            bot_Neftezavod()
+        elseif subMenu == 7 then
             mainMenu()
         end
     end
@@ -156,6 +171,123 @@ function Gun()
     elseif choice == 5 or choice == nil then
         mainMenu()
     end
+end
+
+local active = false
+local savedAddr = nil
+local savedValue = nil
+
+function SpeedHack()
+    gg.clearResults()
+    gg.setRanges(gg.REGION_CODE_APP)
+
+    if not active then
+        gg.searchNumber("9187343240761165228", gg.TYPE_QWORD, false, gg.SIGN_EQUAL, 0, -1)
+        local results = gg.getResults(1)
+
+        if #results == 0 then
+            gg.alert("❌ Значение не найдено.")
+            return
+        end
+
+        savedAddr = results[1].address
+
+        savedValue = gg.getValues({{address = savedAddr, flags = gg.TYPE_QWORD}})[1].value
+
+        local t = {}
+        t[1] = {address = savedAddr, flags = gg.TYPE_FLOAT, value = 3}
+        gg.setValues(t)
+
+        active = true
+        gg.toast("✅ Активировано.")
+
+    else
+        if savedAddr ~= nil and savedValue ~= nil then
+            local restore = {}
+            restore[1] = {address = savedAddr, flags = gg.TYPE_QWORD, value = savedValue}
+            gg.setValues(restore)
+            gg.toast("❌ Деактивировано")
+        end
+        active = false
+    end
+end
+
+function Sprint()
+    gg.clearResults()
+    gg.setRanges(gg.REGION_OTHER)
+
+    gg.searchNumber("281474993487972", gg.TYPE_QWORD, false, gg.SIGN_EQUAL, 0, -1)
+    local r = gg.getResults(30)
+    local t = {}
+
+    if #r == 0 then
+        gg.alert("❌ Значение не найдено.")
+    else
+        for i, v in ipairs(r) do
+            t[i] = {
+                address = v.address - 0x160,
+                flags = gg.TYPE_FLOAT,
+                value = 450,
+                freeze = true
+            }
+        end
+        gg.setValues(t)
+        gg.addListItems(t)
+        gg.toast("✅ Активировано")
+    end
+end
+
+function speedcars()
+    gg.clearResults()
+
+    gg.setRanges(gg.REGION_C_ALLOC)
+    gg.searchNumber("4812096201845506048", gg.TYPE_QWORD, false, gg.SIGN_EQUAL, 0, -1)
+
+    local r = gg.getResults(100)
+    if #r == 0 then
+        gg.alert("❌ Значение не найдено")
+        return
+    end
+
+    local t = {}
+    for i, v in ipairs(r) do
+        t[#t + 1] = {
+            address = v.address + 0x64,
+            flags = gg.TYPE_FLOAT,
+            value = -0.00179999997,
+            freeze = true
+        }
+    end
+
+    gg.setValues(t)
+    gg.addListItems(t)
+    gg.toast("✅ Активировано!")
+end
+
+function flip()
+    gg.clearResults()
+    gg.setRanges(gg.REGION_C_ALLOC)
+    gg.searchNumber("4812096201845506048", gg.TYPE_QWORD, false, gg.SIGN_EQUAL, 0, -1)
+    local results = gg.getResults(100)
+
+    if #results == 0 then
+        gg.alert("❌ Значение не найдено")
+        return
+    end
+
+    local edits = {}
+    for i, v in ipairs(results) do
+        for j = 0, 2 do
+            table.insert(edits, {
+                address = v.address + 0x20 + j * 0x4,
+                flags = gg.TYPE_FLOAT,
+                value = -0.1
+            })
+        end
+    end
+
+    gg.setValues(edits)
+    gg.toast("✅ Активировано")
 end
 
 local modifiedValues = {}
@@ -301,6 +433,8 @@ function Gm_weapons()
         Gm_weapon("MP5", 23, 23.5)
     elseif choice == 5 then
         Gm_weapon("Shotgun", 19, 19.5)
+    elseif choice == 6 then
+        Gun()
     end
 end
 
@@ -1807,10 +1941,10 @@ local pumps = {
     {x = -2073, y = 175, z = 11},--41
     {x = -2167, y = 202, z = 13},--42
     {x = -2183, y = 247, z = 12},--43
-    {x = -2709, y = 2134, z = 27},--44
+    {x = -2490, y = 346, z = 32},--44
     {x = -2517, y = 181, z = 12},--45
     {x = -2217, y = 186, z = 11},--46
-    {x = -2571, y = 109, z = 12},--47
+    {x = -2597, y = 109, z = 11},--47
     {x = -2408, y = 397, z = 11},--48
     {x = 2516, y = -188, z = 4},--49
     {x = 2043, y = 1396, z = 27},--50
@@ -1966,7 +2100,7 @@ function bot_pumps()
     gg.sleep(3000)
     teleport(pumps[66].x, pumps[66].y, pumps[66].z)--66
     gg.sleep(3000)
-    gg.toast("Всё найдено")
+    bot_pumps()
 end
 
 local candy = {
@@ -2675,11 +2809,11 @@ end
 function saveCurrentPoint()
     local values = gg.getListItems()
     if #values < 3 then
-        gg.toast("Сначала найдите координаты")
+        gg.toast("Для начала найдите координаты ")
         return teleport()
     end
 
-    local input = gg.prompt({"Имя точки:"}, nil, {"text"})
+    local input = gg.prompt({"Название точки:"}, nil, {"text"})
     if input and input[1] ~= "" then
         savedPoints[input[1]] = {
             x = values[1].value,
@@ -2687,9 +2821,9 @@ function saveCurrentPoint()
             z = values[3].value
         }
         savePointsToFile()
-        gg.toast("Точка сохранена!")
+        gg.toast("✅ Точка сохраняется!")
     else
-        gg.toast("Отмена сохранения")
+        gg.toast("❌ Отменить сохранение")
     end
     teleport()
 end
