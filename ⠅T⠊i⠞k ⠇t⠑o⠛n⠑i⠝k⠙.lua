@@ -64,6 +64,7 @@ function transportMenu()
         "🚀 Телепорт с Транспортом",
         "🤸 Переворот транспорта(New)", 
         "🏎️ Увеличение скорости(New)",
+        "🛵 Быстрый скутер(New)",
         "🔙 Назад"
     }, nil, "Транспорт")
 
@@ -77,7 +78,9 @@ function transportMenu()
         flip()
     elseif choice == 5 then
         speedcars()
-    elseif choice == 6 or choice == nil then
+    elseif choice == 6 then
+        FastScooterToggle()
+    elseif choice == 7 or choice == nil then
         mainMenu()
     end
 end
@@ -176,12 +179,29 @@ end
 local active = false
 local savedAddr = nil
 local savedValue = nil
+local selectedSpeed = 3 -- значение по умолчанию
+
+function chooseSpeedSlider()
+    local input = gg.prompt(
+        {"Выберите скорость:"},
+        {selectedSpeed},
+        {"number"}
+    )
+
+    if input then
+        selectedSpeed = tonumber(input[1])
+    end
+end
+
 
 function SpeedHack()
     gg.clearResults()
     gg.setRanges(gg.REGION_CODE_APP)
 
     if not active then
+        -- 📌 Перед включением — открываем ползунок выбора.
+        chooseSpeedSlider()
+
         gg.searchNumber("9187343240761165228", gg.TYPE_QWORD, false, gg.SIGN_EQUAL, 0, -1)
         local results = gg.getResults(1)
 
@@ -191,23 +211,25 @@ function SpeedHack()
         end
 
         savedAddr = results[1].address
-
         savedValue = gg.getValues({{address = savedAddr, flags = gg.TYPE_QWORD}})[1].value
 
+        -- Устанавливаем скорость
         local t = {}
-        t[1] = {address = savedAddr, flags = gg.TYPE_FLOAT, value = 3}
+        t[1] = {address = savedAddr, flags = gg.TYPE_FLOAT, value = selectedSpeed}
         gg.setValues(t)
 
         active = true
-        gg.toast("✅ Активировано.")
+        gg.toast("🚀 SpeedHack активирован | x" .. selectedSpeed)
 
     else
+        -- Отключение: восстановление оригинального значения
         if savedAddr ~= nil and savedValue ~= nil then
             local restore = {}
             restore[1] = {address = savedAddr, flags = gg.TYPE_QWORD, value = savedValue}
             gg.setValues(restore)
-            gg.toast("❌ Деактивировано")
+            gg.toast("⛔ SpeedHack отключён")
         end
+
         active = false
     end
 end
@@ -430,7 +452,7 @@ function Gm_weapons()
     elseif choice == 3 then
         Gm_weapon("M4", 27, 27.5)
     elseif choice == 4 then
-        Gm_weapon("MP5", 23, 23.5)
+        Gm_weapon("MP5", 23,5, 23)
     elseif choice == 5 then
         Gm_weapon("Shotgun", 19, 19.5)
     elseif choice == 6 then
@@ -1941,7 +1963,7 @@ local pumps = {
     {x = -2073, y = 175, z = 11},--41
     {x = -2167, y = 202, z = 13},--42
     {x = -2183, y = 247, z = 12},--43
-    {x = -2490, y = 346, z = 32},--44
+    {x = 2490, y = 346, z = 32},--44
     {x = -2517, y = 181, z = 12},--45
     {x = -2217, y = 186, z = 11},--46
     {x = -2597, y = 109, z = 11},--47
@@ -1963,7 +1985,9 @@ local pumps = {
     {x = -1885, y = 201, z = 12},--63
     {x = 1874, y = 1224, z = 34},--64
     {x = 158, y = 2022, z = 9},--65
-    {x = -8, y = 1360, z = 13}--66
+    {x = -8, y = 1360, z = 13},--66
+    {x = 1301, y = 2812, z = 13},--67
+    {x = 1229.70, y = 1060.70, z = 49}--68
 }
 
 -- Основной бот
@@ -2100,6 +2124,10 @@ function bot_pumps()
     gg.sleep(3000)
     teleport(pumps[66].x, pumps[66].y, pumps[66].z)--66
     gg.sleep(3000)
+    teleport(pumps[67].x, pumps[67].y, pumps[67].z)--67
+    gg.sleep(3000)
+    teleport(pumps[68].x, pumps[68].y, pumps[68].z)--68
+    gg.sleep(5000)
     bot_pumps()
 end
 
@@ -2876,6 +2904,48 @@ function teleportToLocation(location)
     else
         gg.toast("Ошибка: нет сохранённых координат")
         teleport()
+    end
+end
+
+--new
+
+local fs_active = false
+local ORIGINAL = "4539628425391341620"
+local BOOSTED  = "4539628427538825268"
+
+function FastScooterToggle()
+    gg.clearResults()
+    gg.setVisible(false)
+    gg.setRanges(bit32.bor(gg.REGION_C_ALLOC, gg.REGION_OTHER))
+
+    if not fs_active then
+        gg.searchNumber(ORIGINAL, gg.TYPE_QWORD)
+        local r = gg.getResults(10)
+
+        if #r == 0 then
+            gg.toast("❌ Значение не найдено")
+            return
+        end
+
+        gg.editAll(BOOSTED, gg.TYPE_QWORD)
+        gg.clearResults()
+
+        fs_active = true
+        gg.toast("✅ Активировано")
+
+    else
+        gg.searchNumber(BOOSTED, gg.TYPE_QWORD)
+        local r = gg.getResults(10)
+
+        if #r == 0 then
+            gg.toast("⚠️ Значение не найдено")
+        end
+
+        gg.editAll(ORIGINAL, gg.TYPE_QWORD)
+        gg.clearResults()
+
+        fs_active = false
+        gg.toast("❌ Деактивировано")
     end
 end
 
