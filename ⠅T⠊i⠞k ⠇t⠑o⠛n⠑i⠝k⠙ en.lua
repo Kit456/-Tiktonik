@@ -56,13 +56,14 @@ end
 function transportMenu()
     gg.setVisible(false)
     local choice = gg.choice({
-        "🚗 Gm Car",
+        "🚗 Gamemode Car",
         "💥 Blow up the car",
         "🚀 Teleport with Vehicles",
-        "🤸 Upheaval of transport(New)", 
-        "🏎️ Increased speed(New)",
+        "🤸 Upheaval of transport", 
+        "🏎️ Increased speed",
+        "🛵 Fast scooter(New)",
         "🔙 Back"
-    }, nil, "Vehicle")
+    }, nil, "Transport")
 
     if choice == 1 then
         toggleFreezeCarHP()
@@ -74,7 +75,9 @@ function transportMenu()
         flip()
     elseif choice == 5 then
         speedcars()
-    elseif choice == 6 or choice == nil then
+    elseif choice == 6 then
+        FastScooterToggle()
+    elseif choice == 7 or choice == nil then
         mainMenu()
     end
 end
@@ -2868,6 +2871,48 @@ function teleportToLocation(location)
     else
         gg.toast("Error: No saved coordinates")
         teleport()
+    end
+end
+
+--new
+
+local fs_active = false
+local ORIGINAL = "4539628425391341620"
+local BOOSTED  = "4539628427538825268"
+
+function FastScooterToggle()
+    gg.clearResults()
+    gg.setVisible(false)
+    gg.setRanges(bit32.bor(gg.REGION_C_ALLOC, gg.REGION_OTHER))
+
+    if not fs_active then
+        gg.searchNumber(ORIGINAL, gg.TYPE_QWORD)
+        local r = gg.getResults(10)
+
+        if #r == 0 then
+            gg.toast("❌ No value found")
+            return
+        end
+
+        gg.editAll(BOOSTED, gg.TYPE_QWORD)
+        gg.clearResults()
+
+        fs_active = true
+        gg.toast("✅ Activated")
+
+    else
+        gg.searchNumber(BOOSTED, gg.TYPE_QWORD)
+        local r = gg.getResults(10)
+
+        if #r == 0 then
+            gg.toast("⚠️ No value found")
+        end
+
+        gg.editAll(ORIGINAL, gg.TYPE_QWORD)
+        gg.clearResults()
+
+        fs_active = false
+        gg.toast("❌ Disabled")
     end
 end
 
