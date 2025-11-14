@@ -173,12 +173,29 @@ end
 local active = false
 local savedAddr = nil
 local savedValue = nil
+local selectedSpeed = 3 -- значение по умолчанию
+
+function chooseSpeedSlider()
+    local input = gg.prompt(
+        {"Выберите скорость:"},
+        {selectedSpeed},
+        {"number"}
+    )
+
+    if input then
+        selectedSpeed = tonumber(input[1])
+    end
+end
+
 
 function SpeedHack()
     gg.clearResults()
     gg.setRanges(gg.REGION_CODE_APP)
 
     if not active then
+        -- 📌 Перед включением — открываем ползунок выбора.
+        chooseSpeedSlider()
+
         gg.searchNumber("9187343240761165228", gg.TYPE_QWORD, false, gg.SIGN_EQUAL, 0, -1)
         local results = gg.getResults(1)
 
@@ -188,23 +205,25 @@ function SpeedHack()
         end
 
         savedAddr = results[1].address
-
         savedValue = gg.getValues({{address = savedAddr, flags = gg.TYPE_QWORD}})[1].value
 
+        -- Устанавливаем скорость
         local t = {}
-        t[1] = {address = savedAddr, flags = gg.TYPE_FLOAT, value = 3}
+        t[1] = {address = savedAddr, flags = gg.TYPE_FLOAT, value = selectedSpeed}
         gg.setValues(t)
 
         active = true
-        gg.toast("✅ Activated.")
+        gg.toast("🚀 SpeedHack Activated | x" .. selectedSpeed)
 
     else
+        -- Отключение: восстановление оригинального значения
         if savedAddr ~= nil and savedValue ~= nil then
             local restore = {}
             restore[1] = {address = savedAddr, flags = gg.TYPE_QWORD, value = savedValue}
             gg.setValues(restore)
-            gg.toast("❌ Disabled")
+            gg.toast("⛔ SpeedHack Disabled")
         end
+
         active = false
     end
 end
