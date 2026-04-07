@@ -210,8 +210,8 @@ return {
         The_Complete = "♻️ Круг завершен", 
         Ship = "🚢 Корабль 1",
         Ship2 = "🚢 Корабль 2",
-        Colision_on "🧱 Коллизия ВКЛЮЧЕНА", 
-        Colision_off "👻 Коллизия ОТКЛЮЧЕНА", 
+        Colision_on = "🧱 Коллизия ВКЛЮЧЕНА", 
+        Colision_off = "👻 Коллизия ОТКЛЮЧЕНА", 
     },
     EN = {
         menu_teleport = "「 Teleport 」",
@@ -424,7 +424,7 @@ return {
         The_Complete = "♻️ The Circle Is Complete", 
         Ship = "🚢 Ship 1",
         Ship2 = "🚢 Ship 2",
-        Colision_on "🧱 Collision INCLUDED", 
-        Colision_off "👻 Collision DISABLED", 
+        Colision_on = "🧱 Collision INCLUDED", 
+        Colision_off = "👻 Collision DISABLED", 
     }
 }
