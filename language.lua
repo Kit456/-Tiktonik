@@ -212,6 +212,14 @@ return {
         Ship2 = "🚢 Корабль 2",
         Colision_on = "🧱 Коллизия ВКЛЮЧЕНА", 
         Colision_off = "👻 Коллизия ОТКЛЮЧЕНА", 
+        Slap_Down = "Slap/Down",
+        Up = "⬆️ Подбросить вверх (+" .. jumpAmount .. ")",
+        down = "⬇️ Опустить вниз (-" .. jumpAmount .. ")",
+        Set_Value = "⚙️ Установить значение (сейчас: " .. jumpAmount .. ")",
+        Altitude_Management = "Управление высотой [" .. jumpAmount .. "]", 
+        Back_top = "Подбросил вверх на +", 
+        Lowered_bottom = "Опустил вниз на -", 
+        Enter_value = "Введите значение:",
     },
     EN = {
         menu_teleport = "「 Teleport 」",
@@ -426,5 +434,13 @@ return {
         Ship2 = "🚢 Ship 2",
         Colision_on = "🧱 Collision INCLUDED", 
         Colision_off = "👻 Collision DISABLED", 
+        Slap_Down = "Slap/Down",
+        Up = "⬆️ Toss up (+" .. jumpAmount .. ")",
+        down = "⬇️ Lower Down (-" .. jumpAmount .. ")",
+        Set_Value = "⚙️ Set Value (Now: " .. jumpAmount .. ")",
+        Altitude_Management = "Altitude Management [" .. jumpAmount .. "]", 
+        Back_top = "Tossed up on the +", 
+        Lowered_bottom = "Lowered it down to -", 
+        Enter_value = "Enter a value:",
     }
 }
